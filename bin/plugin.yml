@@ -1,0 +1,37 @@
+main: me.Buckets.kits.Main
+name: Kits
+version: 1.1
+author: Buckets
+
+commands:
+  hello:
+  kits:
+  kit:
+  announce:
+  staff:
+  s:
+  invis:
+  spawn:
+  kick:
+  ban:
+  unban:
+  mute:
+  report:
+  buybase:
+  pots:
+  soup:
+  
+  
+  base:
+  
+  home:
+  tp:
+  tphere:
+  ci:
+  money:
+  balance:
+  credits:
+  givecredits:
+  warp:
+  setwarp:
+  deletewarp:

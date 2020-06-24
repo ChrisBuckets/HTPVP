@@ -1,0 +1,106 @@
+kits:
+  pvp:
+    menuItem: IRON_SWORD 1 DAMAGE_ALL:1
+    menuName: KIT PVP
+    menuColorCode: f
+    menuLore: The standard kit for pvp
+    items:
+    - IRON_SWORD 1 DAMAGE_ALL:1
+    - BOW 1
+    - ARROW 32
+    armor:
+    - IRON_HELMET 1 PROTECTION_ENVIRONMENTAL:1
+    - IRON_CHESTPLATE 1 PROTECTION_ENVIRONMENTAL:1
+    - IRON_LEGGINGS 1 PROTECTION_ENVIRONMENTAL:1
+    - IRON_BOOTS 1 PROTECTION_ENVIRONMENTAL:1
+    
+  diamond:
+    menuItem: DIAMOND_SWORD 1 DAMAGE_ALL:1
+    menuName: KIT DIAMOND
+    menuColorCode: b
+    menuLore: Diamond set
+    items:
+    - DIAMOND_SWORD 1 DAMAGE_ALL:1
+    - BOW 1 ARROW_INFINITE:1/ARROW_DAMAGE:4/ARROW_KNOCKBACK:2/ARROW_FIRE:1
+    - ARROW 32
+    armor:
+    - DIAMOND_HELMET 1 PROTECTION_ENVIRONMENTAL:1
+    - DIAMOND_CHESTPLATE 1 PROTECTION_ENVIRONMENTAL:1
+    - DIAMOND_LEGGINGS 1 PROTECTION_ENVIRONMENTAL:1
+    - DIAMOND_BOOTS 1 PROTECTION_ENVIRONMENTAL:1
+    
+  elite:
+    menuItem: DIAMOND_SWORD 1 DAMAGE_ALL:1
+    menuName: KIT ELITE
+    menuColorCode: 3
+    menuLore: Diamond set
+    items:
+    - DIAMOND_SWORD 1 DAMAGE_ALL:1
+    - BOW 1 ARROW_INFINITE:1/ARROW_DAMAGE:4/ARROW_KNOCKBACK:2/ARROW_FIRE:1
+    - ARROW 32
+    armor:
+    - DIAMOND_HELMET 1 PROTECTION_ENVIRONMENTAL:1
+    - DIAMOND_CHESTPLATE 1 PROTECTION_ENVIRONMENTAL:4
+    - DIAMOND_LEGGINGS 1 PROTECTION_ENVIRONMENTAL:1
+    - DIAMOND_BOOTS 1 PROTECTION_ENVIRONMENTAL:1
+Players:
+  ff577a34-3831-4c54-a0a3-c56820259796:
+    Muted: false
+    Heals: soup
+    Base:
+      preset:
+        owned: false
+      custom:
+        owned: false
+    getHealsCooldown: 1592766778329
+  ada7f62f-6ce7-4826-ab93-143595461f4c:
+    Muted: false
+    Heals: soup
+    Base:
+      preset:
+        owned: false
+      custom:
+        owned: false
+  7783e91c-a65c-48d8-9af8-e14b736d1100:
+    Muted: false
+    Heals: soup
+    Base:
+      preset:
+        owned: false
+      custom:
+        owned: false
+    getHealsCooldown: 1592767343663
+  a7fd0917-0e15-4596-aa8c-e64e29f7221e:
+    Muted: false
+    Heals: soup
+    Base:
+      preset:
+        owned: false
+      custom:
+        owned: false
+  4b0ace5c-8356-4abf-96ec-3e3fa016d768:
+    Muted: false
+    Heals: soup
+    Base:
+      preset:
+        owned: false
+      custom:
+        owned: false
+    getHealsCooldown: 1592767368065
+  3d2bc877-56dd-4f69-ba11-f4818837031b:
+    Muted: false
+    Heals: soup
+    Base:
+      preset:
+        owned: false
+      custom:
+        owned: false
+    getHealsCooldown: 1592780064600
+  43a8c5cb-98b9-4f07-affb-f59762d0cfb5:
+    Muted: false
+    Heals: soup
+    Base:
+      preset:
+        owned: false
+      custom:
+        owned: false
