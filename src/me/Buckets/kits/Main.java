@@ -82,6 +82,8 @@ public class Main extends JavaPlugin implements Listener {
 		
 		
 		
+		this.getCommand("hit").setExecutor(new Bounty());
+		this.getCommand("hits").setExecutor(new Bounty());
 		this.getCommand("ban").setExecutor(new adminPerms());
 		this.getCommand("unban").setExecutor(new adminPerms());
 		this.getCommand("mute").setExecutor(new adminPerms());
@@ -104,9 +106,12 @@ public class Main extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new fillHeals(), this);
 		this.getServer().getPluginManager().registerEvents(new baseSystem(), this);
 		this.getServer().getPluginManager().registerEvents(new signShop(), this);
-		Kits.createKitSelection();
+		this.getServer().getPluginManager().registerEvents(new bountyMenuEvents(), this);
+		
 		
 		this.saveDefaultConfig();
+		
+		Kits.createKitSelection();
 		
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			kitScoreboard.createBoard(online);
@@ -123,7 +128,6 @@ public class Main extends JavaPlugin implements Listener {
 	
 	
 	@EventHandler()
-	
 	public void onJoin(PlayerJoinEvent event) {
 		if(!getConfig().contains("Players." + event.getPlayer().getUniqueId().toString())) {
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".Muted", false);
@@ -132,6 +136,7 @@ public class Main extends JavaPlugin implements Listener {
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".Base.custom.owned", false);
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".credits", 0);
 			saveConfig();
+			reloadConfig();
 			System.out.println("Saved");
 			Location loc = new Location(Main.getPlugin().getServer().getWorld("Kit World"), 11.505743587904526, 156.0, -38.62288293331645);
 			event.getPlayer().teleport(loc);
@@ -156,8 +161,8 @@ public class Main extends JavaPlugin implements Listener {
 				Player killer = (Player) e.getEntity().getKiller();
 				if(killer == null) return;
 				long randomCredits = ThreadLocalRandom.current().nextInt(90, 120 + 1);
-				long oldCredits =  Main.getPlugin().getConfig().getInt("Player." + killer.getUniqueId() + ".credits");
-				Main.getPlugin().getConfig().set("Player." + killer.getUniqueId() + ".credits", oldCredits + randomCredits);
+				long oldCredits =  Main.getPlugin().getConfig().getInt("Players." + killer.getUniqueId() + ".credits");
+				Main.getPlugin().getConfig().set("Players." + killer.getUniqueId() + ".credits", oldCredits + randomCredits);
 				Main.getPlugin().saveConfig();
 				String playerName = ChatColor.stripColor(player.getDisplayName());
 				killer.sendMessage(ChatColor.GREEN + "You received " + ChatColor.GOLD + randomCredits + " credits " + ChatColor.GREEN + "for killing " + playerName);
@@ -167,7 +172,7 @@ public class Main extends JavaPlugin implements Listener {
 				killerBoard.getTeam("statsKills").setPrefix(ChatColor.AQUA + "Kills: " + ChatColor.GOLD + Integer.toString(killStat));
 				killerBoard.getTeam("statsKDR").setSuffix(ChatColor.GOLD + kitScoreboard.calculateKDR(killer, killer.getStatistic(Statistic.PLAYER_KILLS) + 1, killer.getStatistic(Statistic.DEATHS)));
 				
-				long credits = Main.getPlugin().getConfig().getInt("Player." + killer.getUniqueId() + ".credits");
+				long credits = Main.getPlugin().getConfig().getInt("Players." + killer.getUniqueId() + ".credits");
 				killerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + credits);
 				killer.setScoreboard(killerBoard);
 			}
@@ -187,10 +192,11 @@ public class Main extends JavaPlugin implements Listener {
 	
 	@EventHandler()
 	public void onClick(InventoryClickEvent event) {
+		if(event.getInventory().equals(event.getWhoClicked().getInventory())) return;
 		if(!event.getInventory().equals(Kits.getKitSelection())) return;
-		if(event.getCurrentItem() == null) return;
+		/*if(event.getCurrentItem() == null) return;
 		if(event.getCurrentItem().getItemMeta() == null) return;
-		if(event.getCurrentItem().getItemMeta().getDisplayName() == null) return;
+		if(event.getCurrentItem().getItemMeta().getDisplayName() == null) return;*/
 		
 		event.setCancelled(true);
 		

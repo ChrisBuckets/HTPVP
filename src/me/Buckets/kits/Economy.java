@@ -13,7 +13,7 @@ public class Economy implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = (Player) sender;
 		if(label.equalsIgnoreCase("money") || label.equalsIgnoreCase("balance") || label.equalsIgnoreCase("credits")) {
-			long credits = Main.getPlugin().getConfig().getLong("Player." + player.getUniqueId() + ".credits");
+			long credits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
 			player.sendMessage(ChatColor.GOLD + "Credits: " + ChatColor.WHITE + credits);
 		}
 		
@@ -37,13 +37,12 @@ public class Economy implements CommandExecutor {
 				return true;
 			}
 			
-			long credits = Main.getPlugin().getConfig().getLong("Player." + target.getUniqueId() + ".credits");
+			
 		    try {
 		        Integer.parseInt(args[1]);
-		        Main.getPlugin().getConfig().set("Player." + target.getUniqueId() + ".credits", credits + Integer.parseInt(args[1]));
-		        Main.getPlugin().saveConfig();
+		        Economy.updateCredits(target, Integer.parseInt(args[1]));
 		        Scoreboard targetBoard = target.getScoreboard();
-		        long updatedCredits = Main.getPlugin().getConfig().getLong("Player." + target.getUniqueId() + ".credits");
+		        long updatedCredits = Main.getPlugin().getConfig().getLong("Players." + target.getUniqueId() + ".credits");
 				targetBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + updatedCredits);
 				target.setScoreboard(targetBoard);
 				player.sendMessage(ChatColor.GREEN + "You gave " + args[1] + " credits to " + ChatColor.stripColor(target.getDisplayName()));
@@ -57,5 +56,11 @@ public class Economy implements CommandExecutor {
 			
 		}
 		return false;
+	}
+	
+	public static void updateCredits(Player player, long amount) {
+		long credits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
+        Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".credits", credits + amount);
+        Main.getPlugin().saveConfig();
 	}
 }

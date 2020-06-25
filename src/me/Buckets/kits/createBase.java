@@ -5,6 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -25,8 +26,13 @@ public class createBase implements CommandExecutor {
 				player.sendMessage(ChatColor.RED + "Invalid base to purchase.");
 				return true;
 			}
+			
+	    	long playerCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
+	    	if(playerCredits < 25000) {
+	    		player.sendMessage(ChatColor.GOLD + "[SHOP] " + ChatColor.RED + "Not enough credits.");
+	    		return true;
+	    	}
 			if(!Main.getPlugin().getConfig().contains("Base.coords")) {
-				Location loc = new Location(Main.getPlugin().getServer().getWorld("Kit World"), 2000, 40, 2000);
 				Main.getPlugin().getConfig().set("Base.coords.x", 2000);
 				Main.getPlugin().getConfig().set("Base.coords.y", 40);
 				Main.getPlugin().getConfig().set("Base.coords.z", 2000); 
@@ -67,7 +73,13 @@ public class createBase implements CommandExecutor {
 			Main.getPlugin().saveConfig();
 			Main.getPlugin().getConfig().set("Players." + player.getUniqueId().toString() + ".Base.preset.owned", true);
 			Main.getPlugin().saveConfig();
+			Economy.updateCredits(player, -25000);
+			playerCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
+	    	Scoreboard playerBoard = player.getScoreboard();
+			playerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + playerCredits);
+			player.setScoreboard(playerBoard);
 			player.sendMessage(ChatColor.GREEN + "Base purchased, you can warp to it by using /base or /home");
+			
 		}
 		
 		if(label.equalsIgnoreCase("base") || label.equalsIgnoreCase("home")) {

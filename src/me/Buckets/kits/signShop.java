@@ -22,8 +22,9 @@ public class signShop implements Listener {
 	@EventHandler
 	public void shopSign(PlayerInteractEvent event) {
 		System.out.println(event.getAction());
-		if(event.getClickedBlock().getType() == Material.matchMaterial("SIGN_POST") || event.getClickedBlock().getType() == Material.matchMaterial("WALL_SIGN") || event.getClickedBlock().getType() == Material.matchMaterial("SIGN_POST")) {
-			if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+		if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if(event.getClickedBlock().getType() == Material.matchMaterial("SIGN_POST") || event.getClickedBlock().getType() == Material.matchMaterial("WALL_SIGN") || event.getClickedBlock().getType() == Material.matchMaterial("SIGN_POST")) {
+				
 				
 			    Player player = (Player) event.getPlayer();
 			    Sign sign = (Sign) event.getClickedBlock().getState();
@@ -75,15 +76,15 @@ public class signShop implements Listener {
 						return;
 					}
 			    	
-			    	long playerCredits = Main.getPlugin().getConfig().getLong("Player." + player.getUniqueId() + ".credits");
+			    	long playerCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
 			    	if(playerCredits < Integer.parseInt(credits)) {
 			    		player.sendMessage(ChatColor.GOLD + "[SHOP] " + ChatColor.RED + "Not enough credits.");
 			    		return;
 			    	}
 			    	player.getInventory().addItem(new ItemStack(Material.matchMaterial(itemName), Integer.parseInt(amount)));
 			    	player.sendMessage(ChatColor.GOLD + "[SHOP] " + ChatColor.GREEN + "Item purchased.");
-			    	Main.getPlugin().getConfig().set("Player." + player.getUniqueId() + ".credits", playerCredits - Integer.parseInt(credits));
-			    	playerCredits = Main.getPlugin().getConfig().getLong("Player." + player.getUniqueId() + ".credits");
+			    	Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".credits", playerCredits - Integer.parseInt(credits));
+			    	playerCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
 			    	Scoreboard playerBoard = player.getScoreboard();
 					playerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + playerCredits);
 					player.setScoreboard(playerBoard);
@@ -138,7 +139,7 @@ public class signShop implements Listener {
 			    		return;
 			    	}
 			    	
-			    	long playerCredits = Main.getPlugin().getConfig().getLong("Player." + player.getUniqueId() + ".credits");
+			    	long playerCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
 			    	if(playerCredits < Integer.parseInt(credits)) {
 			    		player.sendMessage(ChatColor.GOLD + "[SHOP] " + ChatColor.RED + "Not enough credits.");
 			    		return;
@@ -156,8 +157,8 @@ public class signShop implements Listener {
 			    	}
 			    	playerItem.addEnchantment(Enchantment.getByName(enchantName), Integer.parseInt(enchantLevel));
 			    	player.sendMessage(ChatColor.GOLD + "[SHOP] " + ChatColor.GREEN + "Enchant purchased.");
-			    	Main.getPlugin().getConfig().set("Player." + player.getUniqueId() + ".credits", playerCredits - Integer.parseInt(credits));
-			    	playerCredits = Main.getPlugin().getConfig().getLong("Player." + player.getUniqueId() + ".credits");
+			    	Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".credits", playerCredits - Integer.parseInt(credits));
+			    	playerCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
 			    	Scoreboard playerBoard = player.getScoreboard();
 					playerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + playerCredits);
 					player.setScoreboard(playerBoard);
@@ -241,7 +242,7 @@ public class signShop implements Listener {
 			return;
 		}
 		
-    	long playerCredits = Main.getPlugin().getConfig().getLong("Player." + player.getUniqueId() + ".credits");
+    	long playerCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
     	if(playerCredits < Integer.parseInt(credits)) {
     		player.sendMessage(ChatColor.GOLD + "[SHOP] " + ChatColor.RED + "Not enough credits.");
     		return;
@@ -280,8 +281,8 @@ public class signShop implements Listener {
 		ItemStack potionStack = potion.toItemStack(Integer.parseInt(amount));
     	player.getInventory().addItem(potionStack);
     	player.sendMessage(ChatColor.GOLD + "[SHOP] " + ChatColor.GREEN + "Item purchased.");
-    	Main.getPlugin().getConfig().set("Player." + player.getUniqueId() + ".credits", playerCredits - Integer.parseInt(credits));
-    	playerCredits = Main.getPlugin().getConfig().getLong("Player." + player.getUniqueId() + ".credits");
+    	Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".credits", playerCredits - Integer.parseInt(credits));
+    	playerCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
     	Scoreboard playerBoard = player.getScoreboard();
 		playerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + playerCredits);
 		player.setScoreboard(playerBoard);

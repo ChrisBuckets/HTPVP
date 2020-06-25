@@ -98,8 +98,6 @@ public class Kits implements CommandExecutor {
 				
 				List<String> kitItems = Main.getPlugin().getConfig().getStringList("kits." + args[0].toLowerCase() + ".items");
 				List<String> kitArmor = Main.getPlugin().getConfig().getStringList("kits." + args[0].toLowerCase() + ".armor");
-				//Set<String> kitItems = this.getConfig().getConfigurationSection("kits." + args[0]).getKeys(false);
-				System.out.println(kitItems);
 				int kitSize = kitItems.size() + kitArmor.size();
 				if(player.getInventory().firstEmpty() == -1 || Kits.getEmptySlots(player) < kitSize) {
 					player.sendMessage(ChatColor.RED + "You do not have enough space in your inventory.");
@@ -239,10 +237,10 @@ public class Kits implements CommandExecutor {
 				}
 			}
 			
-			if(itemName.equalsIgnoreCase("IRON_HELMET") || itemName.equalsIgnoreCase("DIAMOND_HELMET")) player.getInventory().setHelmet(item);
-			if(itemName.equalsIgnoreCase("IRON_CHESTPLATE") || itemName.equalsIgnoreCase("DIAMOND_CHESTPLATE")) player.getInventory().setChestplate(item);
-			if(itemName.equalsIgnoreCase("IRON_LEGGINGS") || itemName.equalsIgnoreCase("DIAMOND_LEGGINGS")) player.getInventory().setLeggings(item);
-			if(itemName.equalsIgnoreCase("IRON_BOOTS") || itemName.equalsIgnoreCase("DIAMOND_BOOTS")) player.getInventory().setBoots(item);
+			if(itemName.equalsIgnoreCase("IRON_HELMET") || itemName.equalsIgnoreCase("DIAMOND_HELMET") || itemName.equalsIgnoreCase("CHAINMAIL_HELMET")) player.getInventory().setHelmet(item);
+			if(itemName.equalsIgnoreCase("IRON_CHESTPLATE") || itemName.equalsIgnoreCase("DIAMOND_CHESTPLATE") || itemName.equalsIgnoreCase("CHAINMAIL_CHESTPLATE")) player.getInventory().setChestplate(item);
+			if(itemName.equalsIgnoreCase("IRON_LEGGINGS") || itemName.equalsIgnoreCase("DIAMOND_LEGGINGS") || itemName.equalsIgnoreCase("CHAINMAIL_LEGGINGS")) player.getInventory().setLeggings(item);
+			if(itemName.equalsIgnoreCase("IRON_BOOTS") || itemName.equalsIgnoreCase("DIAMOND_BOOTS") || itemName.equalsIgnoreCase("CHAINMAIL_BOOTS")) player.getInventory().setBoots(item);
 			
 
 		}

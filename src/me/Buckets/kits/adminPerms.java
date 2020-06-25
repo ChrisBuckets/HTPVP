@@ -230,13 +230,14 @@ public class adminPerms implements CommandExecutor{
 		}
 		
 		if(label.equalsIgnoreCase("ci")) {
-			if(!player.hasPermission("group.admin")) {
-				player.sendMessage(ChatColor.DARK_RED + "You do not have permission.");
-				return true;
-			}
 			if(args.length <= 0) {
 				player.getInventory().clear();
 				player.sendMessage(ChatColor.GRAY + "Inventory cleared");
+				return true;
+			}
+			
+			if(!player.hasPermission("group.admin")) {
+				player.sendMessage(ChatColor.DARK_RED + "You do not have permission.");
 				return true;
 			}
 			Player getInventory = (Player) Bukkit.getPlayer(args[0]);

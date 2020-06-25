@@ -58,7 +58,7 @@ public class kitScoreboard {
 		Team credits = board.registerNewTeam("statsCredits");
 		credits.addEntry(ChatColor.GREEN.toString());
 		credits.setPrefix(ChatColor.AQUA + "Credits: ");
-		String creditAmount = Integer.toString(Main.getPlugin().getConfig().getInt("Player." + player.getUniqueId() + ".credits"));
+		String creditAmount = Integer.toString(Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId() + ".credits"));
 		credits.setSuffix(ChatColor.GOLD + creditAmount);
 		obj.getScore(ChatColor.GREEN.toString()).setScore(1);
 		
@@ -68,7 +68,6 @@ public class kitScoreboard {
 		line2.setSuffix(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "---------");
 		obj.getScore(ChatColor.DARK_RED.toString()).setScore(0);
 		player.setScoreboard(board);
-		
 	}
 	
 	public static String calculateKDR(Player player, int kills, int deaths) {
