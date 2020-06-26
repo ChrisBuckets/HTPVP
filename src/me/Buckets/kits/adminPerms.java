@@ -365,7 +365,19 @@ public class adminPerms implements CommandExecutor{
 	
 		}
 		
-		
+		if(label.equalsIgnoreCase("shop")) {
+			double x = Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".x");
+			double y = Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".y");
+			double z = Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".z");
+			float yaw = (float) Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".yaw");
+			float pitch = (float) Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".pitch");
+			Location loc = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z, yaw, pitch);
+	        player.teleport(loc);
+		}
 		return false;
+		
+		
+		
+		
 	}
 }

@@ -1,6 +1,7 @@
 package me.Buckets.kits;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -60,7 +61,20 @@ public class Economy implements CommandExecutor {
 	
 	public static void updateCredits(Player player, long amount) {
 		long credits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
+		System.out.println(amount);
         Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".credits", credits + amount);
         Main.getPlugin().saveConfig();
+	}
+	
+	public static void updateOfflinePlayerCredits(OfflinePlayer player, long amount) {
+		long credits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
+        Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".credits", credits + amount);
+        Main.getPlugin().saveConfig();
+	}
+	
+	public static Boolean checkPlayerMoney(Player player, long price) {
+		long credits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
+		if(credits < price) return false;
+		return true;
 	}
 }

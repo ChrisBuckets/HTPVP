@@ -16,6 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scoreboard.Scoreboard;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -24,15 +25,27 @@ public class Bounty implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = (Player) sender;
 		if(label.equalsIgnoreCase("hit")) {
-			if(args.length <= 0) {
+			if(args.length <= 1) {
 				player.sendMessage(ChatColor.RED + "Usage: /hit [player] [price]");
 				return true;
 			}
 			
 			String price = args[1];
 			
+		    try {
+		        Long.parseLong(args[1]);
+		    } catch (final NumberFormatException e) {
+		    	player.sendMessage(ChatColor.RED + "Invalid Number.");
+		        return false;
+		    }
+			
 			if(Long.parseLong(price) < 1000) {
 				player.sendMessage(ChatColor.RED + "Minimum hit price is 1000 Credits.");
+				return true;
+			}
+			
+			if(Long.parseLong(price) > 1000000000) {
+				player.sendMessage(ChatColor.RED + "Maximum hit price is 1000000000 Credits.");
 				return true;
 			}
 			
@@ -49,18 +62,28 @@ public class Bounty implements CommandExecutor {
 				return true;
 			}
 			
+			if(!Economy.checkPlayerMoney(player, Long.parseLong(price))) {
+				player.sendMessage(ChatColor.RED + "You do not have enough credits to place this hit.");
+				return true;
+			}
+			
 			Main.getPlugin().getConfig().set("Bounties." + target.getUniqueId() + ".price", price);
 			Main.getPlugin().getConfig().set("Bounties." + target.getUniqueId() + ".customer", player.getUniqueId().toString());
+			Main.getPlugin().getConfig().set("Bounties." + target.getUniqueId() + ".placed", System.currentTimeMillis());
 			Main.getPlugin().saveConfig();
 			Bukkit.broadcastMessage(ChatColor.AQUA + "[HTPVP] " + ChatColor.LIGHT_PURPLE + ChatColor.stripColor(player.getDisplayName()) +
 					" placed a hit on " + ChatColor.stripColor(target.getDisplayName()) + " for " + price + " credits.");
+			Economy.updateCredits(player, -Long.parseLong(price));
+	        Scoreboard playerBoard = player.getScoreboard();
+	        long updatedCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
+			playerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + updatedCredits);
+			player.setScoreboard(playerBoard);
 			player.sendMessage(ChatColor.GREEN + "Hit placed.");
 		}
 		
 
 		if(label.equalsIgnoreCase("hits")) {
 			Bounty.createBountyList(player);
-			
 			return true;
 		}
 		return false;
@@ -68,7 +91,26 @@ public class Bounty implements CommandExecutor {
 	
 	
 	
+	public static Boolean hasBounty(Player player) {
+		if(Main.getPlugin().getConfig().contains("Bounties." + player.getUniqueId())) return true;
+		return false;
+	}
 	
+	
+	public static void giveBountyReward(Player player, Player target) {
+		if(Main.getPlugin().getConfig().contains("Bounties." + target.getUniqueId())) {
+			long price = Long.parseLong(Main.getPlugin().getConfig().getString("Bounties." + target.getUniqueId() + ".price"));
+			Economy.updateCredits(player, price);
+			Bukkit.broadcastMessage(ChatColor.AQUA + "[HTPVP] " + ChatColor.LIGHT_PURPLE + ChatColor.stripColor(player.getDisplayName()) + " received " + Long.toString(price) +
+					" credits for claiming " + ChatColor.stripColor(target.getDisplayName()) + "'s bounty!");
+	        Scoreboard playerBoard = player.getScoreboard();
+	        long updatedCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
+			playerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + updatedCredits);
+			player.setScoreboard(playerBoard);
+			Main.getPlugin().getConfig().set("Bounties." + target.getUniqueId(), null);
+			Main.getPlugin().saveConfig();
+		}
+	}
 	public static List <Inventory> bountyInventories = new ArrayList<>();
 	public static List<Inventory> getBountyMenus() {
 		return bountyInventories;
@@ -77,21 +119,27 @@ public class Bounty implements CommandExecutor {
 		
 		bountyInventories = new ArrayList<>();
 		List <String> Bounties = new ArrayList<String>();
+		if(Main.getPlugin().getConfig().getConfigurationSection("Bounties") == null) {
+			playerOpening.sendMessage(ChatColor.RED + "There are no hits available.");
+			return;
+		}
 		for(String path : Main.getPlugin().getConfig().getConfigurationSection("Bounties").getKeys(false)) {
 			Bounties.add(path);
 		}
 		int list = ((int) Math.ceil(1 / 36.0));
 		
 		int amount = Bounties.size();
+		
 		int index = 0;
+		int getIndex = index;
 		System.out.println(list + " " + Bounties.size());
 		for (int i = 0; i < list; i++) {
 			Inventory BountyMenu = Bukkit.createInventory(null,  45, ChatColor.GRAY + "Bounties");
 			
 			bountyInventories.add(BountyMenu);
 			System.out.println(bountyInventories);
-			for(int j = 0; j < 36; j++) {
-				if(j > amount - 1) break;
+			for(int j = 0; j < amount - getIndex; j++) {
+				if(j > amount) break;
 				System.out.println("hit");
 				UUID playerUUID = UUID.fromString(Bounties.get(index));
 				Player player = (Player) Bukkit.getPlayer(playerUUID);
@@ -145,6 +193,8 @@ public class Bounty implements CommandExecutor {
 			BountyMenu.setItem(36, previous);
 			BountyMenu.setItem(40, close);
 			BountyMenu.setItem(44, next);
+			
+			getIndex = index;
 			
 		}
 		

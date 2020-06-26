@@ -3,6 +3,7 @@ package me.Buckets.kits;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
@@ -17,6 +18,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,6 +30,7 @@ import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
@@ -101,6 +104,7 @@ public class Main extends JavaPlugin implements Listener {
 		
 		this.getCommand("deletewarp").setExecutor(new adminPerms());
 		
+		this.getCommand("shop").setExecutor(new adminPerms());
 		this.getServer().getPluginManager().registerEvents(new combatDetection(), this);
 		this.getServer().getPluginManager().registerEvents(new Soup(), this);
 		this.getServer().getPluginManager().registerEvents(new fillHeals(), this);
@@ -109,6 +113,11 @@ public class Main extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new bountyMenuEvents(), this);
 		
 		
+		this.getServer().getPluginManager().registerEvents(new bountyBoard(), this);
+		
+		
+		this.getServer().getPluginManager().registerEvents(new shopPortal(), this);
+		
 		this.saveDefaultConfig();
 		
 		Kits.createKitSelection();
@@ -116,6 +125,8 @@ public class Main extends JavaPlugin implements Listener {
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			kitScoreboard.createBoard(online);
 		}
+		
+		runnable();
 		
 	}
 	
@@ -126,7 +137,63 @@ public class Main extends JavaPlugin implements Listener {
 		//plugin reloads
 	}
 	
+	public void runnable() {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				
+				//online.sendMessage("Yo");
+				
+				if(Main.getPlugin().getConfig().getConfigurationSection("Bounties") == null) return;
+				
+				for(String path : Main.getPlugin().getConfig().getConfigurationSection("Bounties").getKeys(false)) {
+					UUID playerUUID = UUID.fromString(path);
+					Player player = (Player) Bukkit.getPlayer(playerUUID);
+					if(player == null) {
+						OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUUID);
+						long placed = Main.getPlugin().getConfig().getLong("Bounties." + path + ".customer");
+						if(placed + 172800000 < System.currentTimeMillis()) {
+							Economy.updateOfflinePlayerCredits(offlinePlayer, placed);
+							Main.getPlugin().getConfig().set("Bounties." + path, null);
+							saveConfigFile(Main.getPlugin().getConfig(), new File(getDataFolder(), "config.yml"));
+							
+						}
+						
+					}
+					
+					long placed = Main.getPlugin().getConfig().getLong("Bounties." + path + ".placed");
+					//172800000
+					if(placed + 172800000 < System.currentTimeMillis()) {
+						long price = Long.parseLong(Main.getPlugin().getConfig().getString("Bounties." + path + ".price"));
+						System.out.println(price + "price");
+						Economy.updateCredits(player, price);
+				        Scoreboard playerBoard = player.getScoreboard();
+				        long updatedCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
+						playerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + updatedCredits);
+						player.setScoreboard(playerBoard);
+						
+						saveConfigFile(Main.getPlugin().getConfig(), new File(getDataFolder(), "config.yml"));
+					}
+					
+					
+				}
+				
+			}
+		}.runTaskTimerAsynchronously(this, 0, 40);
+	}
 	
+    private void saveConfigFile(FileConfiguration config, File file) {
+        try {
+            String text = config.saveToString();
+            FileOutputStream outputStream = new FileOutputStream(file);
+            byte[] strToBytes = text.getBytes();
+            outputStream.write(strToBytes);
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
 	@EventHandler()
 	public void onJoin(PlayerJoinEvent event) {
 		if(!getConfig().contains("Players." + event.getPlayer().getUniqueId().toString())) {
@@ -175,6 +242,10 @@ public class Main extends JavaPlugin implements Listener {
 				long credits = Main.getPlugin().getConfig().getInt("Players." + killer.getUniqueId() + ".credits");
 				killerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + credits);
 				killer.setScoreboard(killerBoard);
+				
+				if(Bounty.hasBounty(player)) {
+					Bounty.giveBountyReward(killer, player);
+				}
 			}
 		}
 		

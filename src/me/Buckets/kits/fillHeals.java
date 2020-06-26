@@ -36,7 +36,7 @@ public class fillHeals implements Listener {
 	            		}
 	            	
 	            		long getHealCooldown = Main.getPlugin().getConfig().getLong("Players." + player.getPlayer().getUniqueId().toString() + ".getHealsCooldown") + 125;
-	                	if(System.currentTimeMillis() < getHealCooldown + 125) return;
+	                	if(System.currentTimeMillis() < getHealCooldown + 400) return;
 	                	String healType = Main.getPlugin().getConfig().getString("Players." + player.getUniqueId().toString() + ".Heals");
 	    				if(healType.equalsIgnoreCase("soup")) {
 	    					player.getInventory().addItem(new ItemStack(Material.matchMaterial("MUSHROOM_SOUP")));
@@ -63,7 +63,7 @@ public class fillHeals implements Listener {
 	            			return;
 	            		}
 	            		long getHealCooldown = Main.getPlugin().getConfig().getInt("Players." + player.getPlayer().getUniqueId().toString() + ".getHealsCooldown") + 125;
-	                	if(System.currentTimeMillis() < getHealCooldown + 125) return;
+	                	if(System.currentTimeMillis() < getHealCooldown + 400) return;
 	                	Main.getPlugin().getConfig().set("Players." + player.getPlayer().getUniqueId().toString() + ".getHealsCooldown", System.currentTimeMillis());
 	                	Kits.giveHeals(player);
 	                	player.playSound(player.getLocation(), Sound.valueOf("NOTE_PLING"), 1f,  1f);
