@@ -21,6 +21,7 @@ public class Soup implements Listener {
 		    	if(!soupHeal(player)) return;
 		    	player.getInventory().getItemInHand().setType(Material.BOWL);
 		    	player.updateInventory();
+		    	
 		    }
 		}	
 		

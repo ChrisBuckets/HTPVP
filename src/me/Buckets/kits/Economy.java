@@ -64,6 +64,7 @@ public class Economy implements CommandExecutor {
 		System.out.println(amount);
         Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".credits", credits + amount);
         Main.getPlugin().saveConfig();
+        leaderboardStatues.checkCredits(player);
 	}
 	
 	public static void updateOfflinePlayerCredits(OfflinePlayer player, long amount) {

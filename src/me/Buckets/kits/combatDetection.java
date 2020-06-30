@@ -45,6 +45,8 @@ public class combatDetection implements Listener{
 			}
 			
 			tagPlayer(e);
+			
+			
 	}
 	
 	public static void tagPlayer(EntityDamageByEntityEvent e) {
@@ -58,6 +60,8 @@ public class combatDetection implements Listener{
 		if(Kits.players.contains(attacked.getUniqueId())) {
 			Kits.players.remove(attacked.getUniqueId());
 		}
+		combatTag.tagPlayer(attacker);
+		combatTag.tagPlayer(attacked);
 	}
 	
 	public static void arrowTagPlayer(EntityDamageByEntityEvent e) {

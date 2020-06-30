@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class bountyBoard implements Listener {
 	@EventHandler
@@ -18,15 +19,10 @@ public class bountyBoard implements Listener {
 		 
 		if(event.getRightClicked() instanceof ItemFrame){
 			ItemFrame frame = (ItemFrame) event.getRightClicked();
-			Item item = (Item) frame.getItem();
+			ItemStack item = frame.getItem();
 			
-			
-			
-			if(item.equals(Material.MAP)) {
-				
-				player.sendMessage("yo");
-			}
-			player.sendMessage("You right clicked an item frame!");
+			System.out.println(item);
+			if(item.getType() == Material.matchMaterial("EMPTY_MAP")) Bounty.createBountyList(player);
 			
 		}
 	 

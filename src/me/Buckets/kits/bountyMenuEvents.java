@@ -22,11 +22,14 @@ public class bountyMenuEvents implements Listener{
 		if(event.getCurrentItem().getItemMeta() == null) return;
 		if(event.getCurrentItem().getItemMeta().getDisplayName() == null) return;
 		
-		event.setCancelled(true);
 		if(event.getCurrentItem().getItemMeta().getDisplayName() != null && event.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.DARK_RED + "Close")) {
 			player.closeInventory();
 			return;
 		}
+		
+		
+		
+		event.setCancelled(true);
 		
 		if(event.getCurrentItem().getItemMeta().getDisplayName() != null && event.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.RED + "<- Previous")) {
 			if(Bounty.getBountyMenus().indexOf(event.getInventory()) - 1 < 0) {

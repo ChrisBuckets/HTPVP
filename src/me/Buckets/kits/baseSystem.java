@@ -52,8 +52,9 @@ public class baseSystem implements Listener {
     		Player player = (Player) event.getPlayer();
     		if(player.hasPermission("group.admin")) return;
     	}
-    	if(event.getBlock().getType() == Material.CHEST || event.getBlock().getType() == Material.ANVIL || event.getBlock().getType() == Material.BREWING_STAND || event.getBlock().getType() == Material.BREWING_STAND || event.getBlock().getType().toString().endsWith("WOOL")) return;
     	
+    	if(event.getBlock().getType() == Material.CHEST || event.getBlock().getType() == Material.ANVIL || event.getBlock().getType() == Material.BREWING_STAND || event.getBlock().getType() == Material.BREWING_STAND || event.getBlock().getType().toString().endsWith("WOOL")) return;
+    	Player player = (Player) event.getPlayer();
     	event.setCancelled(true);
     }
     

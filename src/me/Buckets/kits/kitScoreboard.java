@@ -37,22 +37,25 @@ public class kitScoreboard {
 		double kdr = (double) player.getStatistic(Statistic.PLAYER_KILLS) / (double) player.getStatistic(Statistic.DEATHS);
 		Score score4 = obj.getScore(ChatColor.GOLD + "KDR: " + df.format(kdr));
 		score4.setScore(0);*/
+		long killsStat = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".kills");
+		long deathsStat = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".deaths");
+		
 		Team kills = board.registerNewTeam("statsKills");
 		kills.addEntry(ChatColor.BLUE.toString());
-		kills.setPrefix(ChatColor.AQUA + "Kills: " + ChatColor.GOLD + Integer.toString(player.getStatistic(Statistic.PLAYER_KILLS)));
+		kills.setPrefix(ChatColor.AQUA + "Kills: " + ChatColor.GOLD + Long.toString(killsStat));
 		kills.setSuffix("               ");
 		obj.getScore(ChatColor.BLUE.toString()).setScore(4);
 		
 		Team deaths = board.registerNewTeam("statsDeaths");
 		deaths.addEntry(ChatColor.GOLD.toString());
 		deaths.setPrefix(ChatColor.AQUA + "Deaths: ");
-		deaths.setSuffix(ChatColor.GOLD + Integer.toString(player.getStatistic(Statistic.DEATHS)));
+		deaths.setSuffix(ChatColor.GOLD + Long.toString(deathsStat));
 		obj.getScore(ChatColor.GOLD.toString()).setScore(3);
 		
 		Team KDR = board.registerNewTeam("statsKDR");
 		KDR.addEntry(ChatColor.AQUA.toString());
 		KDR.setPrefix(ChatColor.AQUA + "KDR: ");
-		KDR.setSuffix(ChatColor.GOLD + calculateKDR(player, player.getStatistic(Statistic.PLAYER_KILLS), player.getStatistic(Statistic.DEATHS)));
+		KDR.setSuffix(ChatColor.GOLD + calculateKDR(player, killsStat, deathsStat));
 		obj.getScore(ChatColor.AQUA.toString()).setScore(2);
 		
 		Team credits = board.registerNewTeam("statsCredits");
@@ -70,9 +73,10 @@ public class kitScoreboard {
 		player.setScoreboard(board);
 	}
 	
-	public static String calculateKDR(Player player, int kills, int deaths) {
+	public static String calculateKDR(Player player, long kills, long deaths) {
 		DecimalFormat df = new DecimalFormat("#.##");
 		double kdr = (double) kills / (double) deaths;
+		System.out.println(kills + " " + deaths + " " + kdr);
 		return df.format(kdr);
 	}
 	

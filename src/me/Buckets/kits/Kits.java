@@ -44,6 +44,8 @@ public class Kits implements CommandExecutor {
 				if(!Kits.players.contains(player.getUniqueId())) {
 					players.add(player.getUniqueId());
 				}
+				
+				//leaderboardStatues.addJoinPacket(player);
 				return true;
 			}
 		}
