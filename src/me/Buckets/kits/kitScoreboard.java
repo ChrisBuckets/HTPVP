@@ -28,7 +28,7 @@ public class kitScoreboard {
 		line.setPrefix(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "---------");
 		line.setSuffix(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "---------");
 		//Score score = obj.getScore(ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "------------");
-		obj.getScore(ChatColor.RED.toString()).setScore(5);
+		obj.getScore(ChatColor.RED.toString()).setScore(6);
 		/*Score score2 = obj.getScore(ChatColor.GOLD + "Kills: " + player.getStatistic(Statistic.PLAYER_KILLS));
 		score2.setScore(2);
 		Score score3 = obj.getScore(ChatColor.GOLD + "Deaths: " + player.getStatistic(Statistic.DEATHS));
@@ -39,24 +39,31 @@ public class kitScoreboard {
 		score4.setScore(0);*/
 		long killsStat = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".kills");
 		long deathsStat = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".deaths");
+		long playerKillstreak = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".killstreak");
 		
 		Team kills = board.registerNewTeam("statsKills");
 		kills.addEntry(ChatColor.BLUE.toString());
 		kills.setPrefix(ChatColor.AQUA + "Kills: " + ChatColor.GOLD + Long.toString(killsStat));
 		kills.setSuffix("               ");
-		obj.getScore(ChatColor.BLUE.toString()).setScore(4);
+		obj.getScore(ChatColor.BLUE.toString()).setScore(5);
 		
 		Team deaths = board.registerNewTeam("statsDeaths");
 		deaths.addEntry(ChatColor.GOLD.toString());
 		deaths.setPrefix(ChatColor.AQUA + "Deaths: ");
 		deaths.setSuffix(ChatColor.GOLD + Long.toString(deathsStat));
-		obj.getScore(ChatColor.GOLD.toString()).setScore(3);
+		obj.getScore(ChatColor.GOLD.toString()).setScore(4);
 		
 		Team KDR = board.registerNewTeam("statsKDR");
 		KDR.addEntry(ChatColor.AQUA.toString());
 		KDR.setPrefix(ChatColor.AQUA + "KDR: ");
 		KDR.setSuffix(ChatColor.GOLD + calculateKDR(player, killsStat, deathsStat));
-		obj.getScore(ChatColor.AQUA.toString()).setScore(2);
+		obj.getScore(ChatColor.AQUA.toString()).setScore(3);
+		
+		Team killstreak = board.registerNewTeam("statsKillstreak");
+		killstreak.addEntry(ChatColor.DARK_PURPLE.toString());
+		killstreak.setPrefix(ChatColor.AQUA + "Killstreak: ");
+		killstreak.setSuffix(ChatColor.GOLD + Long.toString(playerKillstreak));
+		obj.getScore(ChatColor.DARK_PURPLE.toString()).setScore(2);
 		
 		Team credits = board.registerNewTeam("statsCredits");
 		credits.addEntry(ChatColor.GREEN.toString());
@@ -64,7 +71,6 @@ public class kitScoreboard {
 		String creditAmount = Integer.toString(Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId() + ".credits"));
 		credits.setSuffix(ChatColor.GOLD + creditAmount);
 		obj.getScore(ChatColor.GREEN.toString()).setScore(1);
-		
 		Team line2 = board.registerNewTeam("statsLine2");
 		line2.addEntry(ChatColor.DARK_RED.toString());
 		line2.setPrefix(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "---------");
@@ -79,6 +85,7 @@ public class kitScoreboard {
 		System.out.println(kills + " " + deaths + " " + kdr);
 		return df.format(kdr);
 	}
+	
 	
 	
 }

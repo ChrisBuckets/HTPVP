@@ -1,5 +1,6 @@
 package me.Buckets.kits;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -83,6 +84,10 @@ public class createBase implements CommandExecutor {
 		}
 		
 		if(label.equalsIgnoreCase("base") || label.equalsIgnoreCase("home")) {
+			if(combatTag.checkTagged(player)) {
+				player.sendMessage(ChatColor.RED + "You can't teleport while in combat.");
+				return true;
+			}
 			if(!Main.getPlugin().getConfig().getBoolean("Players." + player.getUniqueId().toString() + ".Base.preset.owned")) {
 				player.sendMessage(ChatColor.RED + "You do not have a base, go to /warp shop to purchase one.");
 				return true;

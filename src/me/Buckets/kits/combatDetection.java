@@ -1,5 +1,6 @@
 package me.Buckets.kits;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -13,6 +14,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+
+import net.md_5.bungee.api.ChatColor;
 
 
 
@@ -99,6 +102,12 @@ public class combatDetection implements Listener{
 			System.out.println("Removed");
 			System.out.println(Kits.players.toString() + "players");
 		}
+		if(combatTag.checkTagged(player)) {
+			player.setHealth(0);
+			Bukkit.broadcastMessage(ChatColor.GRAY + player.getName() + " died from combat logging.");
+			Bukkit.getServer().getScheduler().cancelTask(combatTag.playerTags.get(player));
+			combatTag.playerTags.remove(player);
+		}
 	}
 	
 	
@@ -112,6 +121,11 @@ public class combatDetection implements Listener{
 		e.setRespawnLocation(loc);
 		if(!Kits.players.contains(player.getUniqueId())) {
 			Kits.players.add(player.getUniqueId());
+		}
+		
+		if(combatTag.checkTagged(player)) {
+			Bukkit.getServer().getScheduler().cancelTask(combatTag.playerTags.get(player));
+			combatTag.playerTags.remove(player);
 		}
 	}
 }

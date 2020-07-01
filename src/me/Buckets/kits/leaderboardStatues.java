@@ -146,16 +146,10 @@ public class leaderboardStatues implements CommandExecutor {
 		Location labelText = new Location(Main.getPlugin().getServer().getWorld("Kit World"), npc.getStoredLocation().getX(), npc.getStoredLocation().getY() + 4, npc.getStoredLocation().getZ());
 		killstreakHologram.teleport(text);
 		killstreakLabelHologram.teleport(labelText);
-		long bestKillstreak = 0;
-		String uuid = Bukkit.getPlayer("FishFr0g").getUniqueId().toString();
-		for(String path : Main.getPlugin().getConfig().getConfigurationSection("Players.").getKeys(false)) {
-			long killstreak = Main.getPlugin().getConfig().getLong("Players." + path + ".killstreak");
-			if(killstreak > bestKillstreak) {
-				bestKillstreak = killstreak;
-				uuid = path;
-			}
-		}
-		
+		long bestKillstreak = Main.getPlugin().getConfig().getLong("Leaderboards." + "killstreak" + ".amount");
+		String uuid = Main.getPlugin().getConfig().getString("Leaderboards." + "killstreak" + ".player");
+		if(uuid == null) uuid = Bukkit.getOfflinePlayer("FishFr0g").getUniqueId().toString();
+		if(!Main.getPlugin().getConfig().contains("Leaderboards." + "killstreak" + ".amount")) bestKillstreak = 0;
 		
 		Player playerBestStat = Bukkit.getPlayer(UUID.fromString(uuid));
 		OfflinePlayer offlinePlayerBestStat =  Bukkit.getOfflinePlayer(UUID.fromString(uuid));
@@ -229,7 +223,7 @@ public class leaderboardStatues implements CommandExecutor {
 		Main.getPlugin().getConfig().set("Leaderboards." + "kdr" + ".amount", bestStat);
 		Main.getPlugin().getConfig().set("Leaderboards." + "kdr" + ".player", playerBestStat.getUniqueId().toString());
 		Main.getPlugin().saveConfig();
-		Bukkit.broadcastMessage("Statue updated");
+		
 	}
 	
 	

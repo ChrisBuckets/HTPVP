@@ -286,6 +286,10 @@ public class adminPerms implements CommandExecutor{
 		}
 		
 		if(label.equalsIgnoreCase("warp")) {
+			if(combatTag.checkTagged(player)) {
+				player.sendMessage(ChatColor.RED + "You can't teleport while in combat.");
+				return true;
+			}
 			if(args.length <= 0) {
 				String warpList = ChatColor.WHITE + "";
 				for(String path : Main.getPlugin().getConfig().getConfigurationSection("Warps").getKeys(false)) {
@@ -366,6 +370,10 @@ public class adminPerms implements CommandExecutor{
 		}
 		
 		if(label.equalsIgnoreCase("shop")) {
+			if(combatTag.checkTagged(player)) {
+				player.sendMessage(ChatColor.RED + "You can't teleport while in combat.");
+				return true;
+			}
 			double x = Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".x");
 			double y = Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".y");
 			double z = Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".z");

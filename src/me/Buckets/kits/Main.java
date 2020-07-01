@@ -216,6 +216,7 @@ public class Main extends JavaPlugin implements Listener {
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".Base.preset.owned", false);
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".Base.custom.owned", false);
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".credits", 0);
+			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".creditBoost", 1);
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".kills", 0);
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".killstreak", 0);
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".deaths", 0);
@@ -237,6 +238,10 @@ public class Main extends JavaPlugin implements Listener {
 	@EventHandler()
 	public void entityDeath(EntityDeathEvent e) {
 		System.out.println("entity died");
+		if(e.getEntity() instanceof Player) {
+			Player player = (Player) e.getEntity();
+			Killstreaks.removeKillstreak(player);
+		}
 		if(e.getEntity() != null && e.getEntity() instanceof Player) {
 			Player player = (Player) e.getEntity();
 			Scoreboard board = player.getScoreboard();
@@ -247,18 +252,21 @@ public class Main extends JavaPlugin implements Listener {
 			board.getTeam("statsDeaths").setSuffix(ChatColor.GOLD + Long.toString(deathsStat));
 			board.getTeam("statsKDR").setSuffix(ChatColor.GOLD + kitScoreboard.calculateKDR(player, killsStat, deathsStat));
 			player.setScoreboard(board);
-			
 			leaderboardStatues.checkKDR(player);
 			if(e.getEntity().getKiller() != null) {
 				Player killer = (Player) e.getEntity().getKiller();
 				if(killer == null) return;
 				if(killer == player) return;
+				double creditBoost = Main.getPlugin().getConfig().getDouble("Players." + killer.getUniqueId() + ".creditBoost");
 				long randomCredits = ThreadLocalRandom.current().nextLong(90, 120 + 1);
+				long multipliedCredits = (long) Math.round(randomCredits * creditBoost);		
 				long oldCredits =  Main.getPlugin().getConfig().getLong("Players." + killer.getUniqueId() + ".credits");
-				Main.getPlugin().getConfig().set("Players." + killer.getUniqueId() + ".credits", oldCredits + randomCredits);
+				killer.sendMessage(Long.toString(randomCredits));
+				killer.sendMessage(Long.toString(multipliedCredits));
+				Main.getPlugin().getConfig().set("Players." + killer.getUniqueId() + ".credits", oldCredits + multipliedCredits);
 				Main.getPlugin().saveConfig();
 				String playerName = ChatColor.stripColor(player.getDisplayName());
-				killer.sendMessage(ChatColor.GREEN + "You received " + ChatColor.GOLD + randomCredits + " credits " + ChatColor.GREEN + "for killing " + playerName);
+				killer.sendMessage(ChatColor.GREEN + "You received " + ChatColor.GOLD + multipliedCredits + " credits " + ChatColor.GREEN + "for killing " + playerName);
 				
 				Scoreboard killerBoard = killer.getScoreboard();
 				killsStat = Main.getPlugin().getConfig().getLong("Players." + killer.getUniqueId() + ".kills") + 1;
@@ -272,10 +280,9 @@ public class Main extends JavaPlugin implements Listener {
 				long credits = Main.getPlugin().getConfig().getInt("Players." + killer.getUniqueId() + ".credits");
 				killerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + credits);
 				killer.setScoreboard(killerBoard);
-				leaderboardStatues.checkKillstreak(killer);	
 				leaderboardStatues.checkKills(killer);
 				leaderboardStatues.checkKDR(killer);
-				
+				Killstreaks.addKillstreak(killer);
 				if(Bounty.hasBounty(player)) {
 					Bounty.giveBountyReward(killer, player);
 				}

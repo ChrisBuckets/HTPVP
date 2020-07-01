@@ -19,6 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 import net.md_5.bungee.api.ChatColor;
@@ -38,6 +40,10 @@ public class Kits implements CommandExecutor {
 		if(label.equalsIgnoreCase("spawn")) {
 			if(sender instanceof Player) {
 				Player player = (Player) sender;
+				if(combatTag.checkTagged(player)) {
+					player.sendMessage(ChatColor.RED + "You can't teleport while in combat.");
+					return true;
+				}
 				System.out.println(player.getLocation());
 				Location loc = new Location(Main.getPlugin().getServer().getWorld("Kit World"), 11.505743587904526, 156.0, -38.62288293331645);
 				player.teleport(loc);
