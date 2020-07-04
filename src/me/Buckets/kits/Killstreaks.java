@@ -23,7 +23,7 @@ public class Killstreaks {
 	
 	public static void removeKillstreak(Player player) {
 		Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".killstreak", 0);
-		Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + "creditBoost", 1.0);
+		Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".creditBoost", "1.0");
 		Main.getPlugin().saveConfig();
 		Scoreboard playerBoard = player.getScoreboard();
 		
@@ -39,14 +39,14 @@ public class Killstreaks {
 		long playerKillstreak = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".killstreak");
 		if(playerKillstreak == 3) {
 			Bukkit.broadcastMessage(ChatColor.GOLD + "[HTPVP] " + ChatColor.AQUA + player.getDisplayName() + " is on a " + playerKillstreak + " killstreak!");
-			Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + "creditBoost", 1.1);
+			Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".creditBoost", "1.1");
 			Main.getPlugin().saveConfig();
 			player.sendMessage(ChatColor.GREEN + "You received a 1.1x Credit boost for your 3 killstreak!");
 		}
 		
 		if(playerKillstreak == 5) {
 			Bukkit.broadcastMessage(ChatColor.GOLD + "[HTPVP] " + ChatColor.AQUA + player.getDisplayName() + " is on a " + playerKillstreak + " killstreak!");
-			Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + "creditBoost", 1.2);
+			Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".creditBoost", "1.2");
 			Main.getPlugin().saveConfig();
 			player.addPotionEffect((new PotionEffect(PotionEffectType.SPEED, 1200, 0)));
 			player.sendMessage(ChatColor.GREEN + "You received a 1.2x Credit boost and speed for your 5 killstreak!");
@@ -54,7 +54,7 @@ public class Killstreaks {
 		
 		if(playerKillstreak == 10) {
 			Bukkit.broadcastMessage(ChatColor.GOLD + "[HTPVP] " + ChatColor.AQUA + player.getDisplayName() + " is on a " + playerKillstreak + " killstreak!");
-			Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + "creditBoost", 1.3);
+			Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".creditBoost", "1.3");
 			Main.getPlugin().saveConfig();
 			player.addPotionEffect((new PotionEffect(PotionEffectType.SPEED, 2400, 0)));
 			player.addPotionEffect((new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2400, 0)));
@@ -63,7 +63,7 @@ public class Killstreaks {
 		
 		if(playerKillstreak == 20) {
 			Bukkit.broadcastMessage(ChatColor.GOLD + "[HTPVP] " + ChatColor.AQUA + player.getDisplayName() + " is on a " + playerKillstreak + " killstreak!");
-			Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + "creditBoost", 1.4);
+			Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + "creditBoost", "1.4");
 			Main.getPlugin().saveConfig();
 			player.addPotionEffect((new PotionEffect(PotionEffectType.SPEED, 2400, 1)));
 			player.addPotionEffect((new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2400, 1)));
@@ -71,7 +71,7 @@ public class Killstreaks {
 		}
 		if(playerKillstreak == 30) {
 			Bukkit.broadcastMessage(ChatColor.GOLD + "[HTPVP] " + ChatColor.AQUA + player.getDisplayName() + " is on a " + playerKillstreak + " killstreak!");
-			Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + "creditBoost", 1.5);
+			Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".creditBoost", "1.5");
 			Main.getPlugin().saveConfig();
 			player.addPotionEffect((new PotionEffect(PotionEffectType.SPEED, 2400, 1)));
 			player.addPotionEffect((new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2400, 2)));

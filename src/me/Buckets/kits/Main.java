@@ -67,7 +67,6 @@ public class Main extends JavaPlugin implements Listener {
 		
 		this.getCommand("spawn").setExecutor(new Kits());
 		
-		
 		this.getCommand("buybase").setExecutor(new createBase());
 		this.getCommand("base").setExecutor(new createBase());
 		this.getCommand("home").setExecutor(new createBase());
@@ -92,7 +91,7 @@ public class Main extends JavaPlugin implements Listener {
 		this.getCommand("report").setExecutor(new adminPerms());
 		this.getCommand("soup").setExecutor(new Kits());
 		this.getCommand("pots").setExecutor(new Kits());
-		
+		this.getCommand("give").setExecutor(new buildBlocks());
 		
 		
 		
@@ -216,7 +215,7 @@ public class Main extends JavaPlugin implements Listener {
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".Base.preset.owned", false);
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".Base.custom.owned", false);
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".credits", 0);
-			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".creditBoost", 1);
+			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".creditBoost", "1.0");
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".kills", 0);
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".killstreak", 0);
 			getConfig().set("Players." + event.getPlayer().getUniqueId().toString() + ".deaths", 0);
@@ -257,14 +256,12 @@ public class Main extends JavaPlugin implements Listener {
 				Player killer = (Player) e.getEntity().getKiller();
 				if(killer == null) return;
 				if(killer == player) return;
-				double creditBoost = Main.getPlugin().getConfig().getDouble("Players." + killer.getUniqueId() + ".creditBoost");
+				double creditBoost = Double.parseDouble(Main.getPlugin().getConfig().getString("Players." + killer.getUniqueId() + ".creditBoost"));
 				long randomCredits = ThreadLocalRandom.current().nextLong(90, 120 + 1);
 				long multipliedCredits = (long) Math.round(randomCredits * creditBoost);		
-				long oldCredits =  Main.getPlugin().getConfig().getLong("Players." + killer.getUniqueId() + ".credits");
 				killer.sendMessage(Long.toString(randomCredits));
 				killer.sendMessage(Long.toString(multipliedCredits));
-				Main.getPlugin().getConfig().set("Players." + killer.getUniqueId() + ".credits", oldCredits + multipliedCredits);
-				Main.getPlugin().saveConfig();
+				Economy.updateCredits(killer, multipliedCredits);
 				String playerName = ChatColor.stripColor(player.getDisplayName());
 				killer.sendMessage(ChatColor.GREEN + "You received " + ChatColor.GOLD + multipliedCredits + " credits " + ChatColor.GREEN + "for killing " + playerName);
 				
@@ -277,7 +274,7 @@ public class Main extends JavaPlugin implements Listener {
 				System.out.println(kitScoreboard.calculateKDR(killer, killsStat, deathsStat) + "kdr");
 				killerBoard.getTeam("statsKDR").setSuffix(ChatColor.GOLD + kitScoreboard.calculateKDR(killer, killsStat, deathsStat));
 				
-				long credits = Main.getPlugin().getConfig().getInt("Players." + killer.getUniqueId() + ".credits");
+				long credits = Main.getPlugin().getConfig().getLong("Players." + killer.getUniqueId() + ".credits");
 				killerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + credits);
 				killer.setScoreboard(killerBoard);
 				leaderboardStatues.checkKills(killer);

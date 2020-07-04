@@ -25,4 +25,32 @@ kits:
     - IRON_CHESTPLATE 1 PROTECTION_PROJECTILE:1
     - CHAINMAIL_LEGGINGS 1 PROTECTION_ENVIRONMENTAL:2/DURABILITY:3
     - CHAINMAIL_BOOTS 1 PROTECTION_ENVIRONMENTAL:2/DURABILITY:3
+bannedBlocks:
+  - chest
+  - trapped_chest
+  - anvil
+  - tnt
+  - sulphur
+  - hopper
+  - dropper
+  - lava
+  - lava_bucket
+  - redstone
+  - redstone_block
+  - glowstone_block
+  - glowstone
+  - dispenser
+  - storage_minecart
+  - command_minecart
+  - minecart
+  - powered_minecart
+  - explosive_minecart
+  - hopper_minecart
+  - redstone_ore
+  - command
+  - mob_spawner
+  - monster_egg
+  - ender_pearl
+  - skull_item
+  
 Players:

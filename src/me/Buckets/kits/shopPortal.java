@@ -20,6 +20,10 @@ public class shopPortal implements Listener {
 			Location loc = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z, yaw, pitch);
 	        event.getPlayer().teleport(loc);
 	    }
+	    
+	    
+		if(event.getCause() == PlayerPortalEvent.TeleportCause.NETHER_PORTAL)event.setCancelled(true);
+		
 	}
 	
 }

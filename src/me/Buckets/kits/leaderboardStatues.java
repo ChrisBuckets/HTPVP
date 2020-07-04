@@ -409,7 +409,6 @@ public class leaderboardStatues implements CommandExecutor {
 			kdrHologram.clearLines();
 			kdrHologram.appendTextLine(ChatColor.GOLD + "" + kdrFormat + " KDR");
 			String[] name = leaderboardStatues.getOnlineSkin(player);
-			Bukkit.broadcastMessage("Statue updated");
 			if(npc == null) {
 				System.out.println("Statue not found.");
 				return;
