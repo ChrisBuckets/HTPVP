@@ -105,11 +105,10 @@ public class createBase implements CommandExecutor {
 				player.sendMessage(ChatColor.RED + "You can't teleport while in combat.");
 				return true;
 			}
-			if(args.length <= 0 && !Main.getPlugin().getConfig().getBoolean("Players." + player.getUniqueId().toString() + ".Base.preset.owned")) {
-				player.sendMessage(ChatColor.RED + "You do not have a base from the shop, use /base mvp or /base alpha if you own a donator base.");
+			if(args.length > 0 && !args[0].equalsIgnoreCase("mvp") && !args[0].equalsIgnoreCase("alpha")) {
+				player.sendMessage(ChatColor.RED + "Invalid base.");
 				return true;
 			}
-			
 			if(args.length > 0 && args[0].equalsIgnoreCase("mvp")) {
 				if(!player.hasPermission("mvpbase") && !player.hasPermission("group.mvp")) {
 					player.sendMessage(""); //tell them they don't have a base, give them link to buycraft store
@@ -148,7 +147,6 @@ public class createBase implements CommandExecutor {
 					return true;
 				}
 				
-				
 				int x = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.mvp.x");
 				int y = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.mvp.y");
 				int z = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.mvp.z");
@@ -172,7 +170,7 @@ public class createBase implements CommandExecutor {
 			
 			
 			if(args.length > 0 && args[0].equalsIgnoreCase("alpha")) {
-				if(!player.hasPermission("alphabase") || !player.hasPermission("group.alpha")) {
+				if(!player.hasPermission("alphabase") && !player.hasPermission("group.alpha")) {
 					player.sendMessage(""); //tell them they don't have a base, give them link to buycraft store
 					return true;
 				}
@@ -219,6 +217,13 @@ public class createBase implements CommandExecutor {
 				System.out.println(x + " " + y + " " + z);
 				Location base = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z);
 				player.teleport(base);
+				return true;
+			}
+			
+			if(!Main.getPlugin().getConfig().contains("Players." + player.getUniqueId().toString() + ".Base.mvp") && 
+					!Main.getPlugin().getConfig().getBoolean("Players." + player.getUniqueId().toString() + ".Base.preset.owned") &&
+					!Main.getPlugin().getConfig().contains("Players." + player.getUniqueId().toString() + ".Base.alpha") ) {
+				player.sendMessage(ChatColor.RED + "You do not have a base from the shop, use /base mvp or /base alpha if you own a donator base.");
 				return true;
 			}
 			

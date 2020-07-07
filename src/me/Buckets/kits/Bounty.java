@@ -111,14 +111,14 @@ public class Bounty implements CommandExecutor {
 			Main.getPlugin().saveConfig();
 		}
 	}
-	public static List <Inventory> bountyInventories = new ArrayList<>();
-	public static List<Inventory> getBountyMenus() {
-		return bountyInventories;
+	public static List <Inventory> warpInventories = new ArrayList<>();
+	public static List<Inventory> getWarpMenus() {
+		return warpInventories;
 	}
 	public static void createBountyList(Player playerOpening) {
 		
-		bountyInventories = new ArrayList<>();
-		List <String> Bounties = new ArrayList<String>();
+		warpInventories = new ArrayList<>();
+		List <String> Warps = new ArrayList<String>();
 		if(Main.getPlugin().getConfig().getConfigurationSection("Bounties") == null) {
 			playerOpening.sendMessage(ChatColor.RED + "There are no hits available.");
 			return;

@@ -1,5 +1,7 @@
 package me.Buckets.kits;
 
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,6 +28,21 @@ public class buildBlocks implements CommandExecutor {
 			if(player.getInventory().firstEmpty() == -1) {
 					player.sendMessage(ChatColor.RED + "You do not have enough space in your inventory.");
 					return true;
+			}
+			
+			
+			List<String> bannedBlocks = Main.getPlugin().getConfig().getStringList("bannedBlocks");
+			for(int i = 0; i < bannedBlocks.size(); i++) {
+				if(player.hasPermission("group.owner")) break;
+				String materialName = args[0];
+				if(Material.matchMaterial(materialName) != null && Material.matchMaterial(materialName).getId() == Material.matchMaterial(bannedBlocks.get(i)).getId()) {
+					player.sendMessage(ChatColor.RED + "You do not have permission to spawn in this item.");
+					return true;
+				}
+				if(materialName.equalsIgnoreCase(bannedBlocks.get(i))) {
+					player.sendMessage(ChatColor.RED + "You do not have permission to spawn in this item.");
+					return true;
+				}
 			}
 			
 			try {

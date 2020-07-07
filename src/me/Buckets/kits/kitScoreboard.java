@@ -25,8 +25,8 @@ public class kitScoreboard {
 		obj.setDisplayName(ChatColor.BOLD + "" + ChatColor.AQUA + "   HTPVP.COM");
 		Team line = board.registerNewTeam("statsLine");
 		line.addEntry(ChatColor.RED.toString());
-		line.setPrefix(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "---------");
-		line.setSuffix(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "---------");
+		line.setPrefix(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "  -------");
+		line.setSuffix(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "  -------");
 		//Score score = obj.getScore(ChatColor.RED + "" + ChatColor.STRIKETHROUGH + "------------");
 		obj.getScore(ChatColor.RED.toString()).setScore(6);
 		/*Score score2 = obj.getScore(ChatColor.GOLD + "Kills: " + player.getStatistic(Statistic.PLAYER_KILLS));
@@ -73,8 +73,8 @@ public class kitScoreboard {
 		obj.getScore(ChatColor.GREEN.toString()).setScore(1);
 		Team line2 = board.registerNewTeam("statsLine2");
 		line2.addEntry(ChatColor.DARK_RED.toString());
-		line2.setPrefix(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "---------");
-		line2.setSuffix(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "---------");
+		line2.setPrefix(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "  -------");
+		line2.setSuffix(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "  -------");
 		obj.getScore(ChatColor.DARK_RED.toString()).setScore(0);
 		player.setScoreboard(board);
 	}

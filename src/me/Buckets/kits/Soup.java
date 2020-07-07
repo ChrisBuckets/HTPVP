@@ -23,6 +23,7 @@ public class Soup implements Listener {
 		    	player.updateInventory();
 		    	
 		    }
+		    
 		}	
 		
 		

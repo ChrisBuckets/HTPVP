@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -16,11 +17,17 @@ import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.LocalPlayer;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.world.DataException;
+import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldguard.bukkit.RegionQuery;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 
 public class baseSystem implements Listener {
@@ -51,22 +58,47 @@ public class baseSystem implements Listener {
     	if(event.getPlayer() != null) {
     		Player player = (Player) event.getPlayer();
     		if(player.hasPermission("group.admin")) return;
-    		if(player.hasPermission("build")) return;
+			RegionContainer container = createBase.getWorldGuard().getRegionContainer();
+			RegionQuery query = container.createQuery();
+
+			ApplicableRegionSet set = query.getApplicableRegions(player.getLocation());
+			Boolean checkOwnership = false;
+		    for (ProtectedRegion region : set) {
+		    	if (region.getOwners().contains(player.getUniqueId())) checkOwnership = true;
+		    }
+		    
+    		if(player.hasPermission("build") && checkOwnership) {
+    			if(event.getBlock().getType() == Material.GLOWSTONE) event.getBlock().setType(Material.AIR);
+    			return;
+    		}
     	}
+    	
     	
     	if(event.getBlock().getType() == Material.CHEST || event.getBlock().getType() == Material.ANVIL || event.getBlock().getType() == Material.BREWING_STAND || event.getBlock().getType() == Material.BREWING_STAND || event.getBlock().getType().toString().endsWith("WOOL")) return;
     	Player player = (Player) event.getPlayer();
     	event.setCancelled(true);
     }
     
+    
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
     	if(event.getPlayer() != null) {
     		Player player = (Player) event.getPlayer();
     		if(player.hasPermission("group.admin")) return;
+    		if(player.hasPermission("build")) return;
     	}
     	if(event.getBlock().getType() == Material.CHEST || event.getBlock().getType() == Material.ANVIL || event.getBlock().getType() == Material.BREWING_STAND || event.getBlock().getType().toString().endsWith("WOOL")) return;
     	event.setCancelled(true);
+    }
+    
+    
+    
+    @EventHandler
+    public void openTable(PlayerInteractEvent event) {
+    	if(event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+    	if(event.getClickedBlock().getType() == Material.WORKBENCH) event.setCancelled(true);
+    	if(event.getClickedBlock().getType() == Material.ENCHANTMENT_TABLE) event.setCancelled(true);
+    	if(event.getClickedBlock().getType() == Material.FURNACE) event.setCancelled(true);
     }
     
 	

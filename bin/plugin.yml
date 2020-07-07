@@ -40,3 +40,7 @@ commands:
   shop:
   npcadd:
   give:
+ 
+ 
+  pay:
+  pwarp:

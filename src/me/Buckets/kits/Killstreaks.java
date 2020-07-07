@@ -29,7 +29,6 @@ public class Killstreaks {
 		
 		
 		long playerKillstreak = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".killstreak");
-		player.sendMessage(Long.toString(playerKillstreak));
 		playerBoard.getTeam("statsKillstreak").setSuffix(ChatColor.GOLD + Long.toString(playerKillstreak));
 		player.setScoreboard(playerBoard);
 	}

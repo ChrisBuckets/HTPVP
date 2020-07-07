@@ -35,7 +35,7 @@ public class fillHeals implements Listener {
 	            			return;
 	            		}
 	            	
-	            		long getHealCooldown = Main.getPlugin().getConfig().getLong("Players." + player.getPlayer().getUniqueId().toString() + ".getHealsCooldown") + 125;
+	            		Long getHealCooldown = Main.ServerPlayers.get(player.getUniqueId()).gaveHeals;
 	                	if(System.currentTimeMillis() < getHealCooldown + 400) return;
 	                	String healType = Main.getPlugin().getConfig().getString("Players." + player.getUniqueId().toString() + ".Heals");
 	    				if(healType.equalsIgnoreCase("soup")) {
@@ -47,7 +47,7 @@ public class fillHeals implements Listener {
 	    					ItemStack potion = healPot.toItemStack(1);
 	    					player.getInventory().addItem(new ItemStack(potion));
 	    				}
-	                	Main.getPlugin().getConfig().set("Players." + player.getPlayer().getUniqueId().toString() + ".getHealsCooldown", System.currentTimeMillis());
+	                	Main.ServerPlayers.get(player.getUniqueId()).gaveHeals = System.currentTimeMillis();
 	                	player.playSound(player.getLocation(), Sound.valueOf("NOTE_PLING"), 1f,  1f);
 	                	return;
 	                }
@@ -62,9 +62,9 @@ public class fillHeals implements Listener {
 	            			player.sendMessage(ChatColor.RED + "Your inventory is full.");
 	            			return;
 	            		}
-	            		long getHealCooldown = Main.getPlugin().getConfig().getInt("Players." + player.getPlayer().getUniqueId().toString() + ".getHealsCooldown") + 125;
+	            		Long getHealCooldown = Main.ServerPlayers.get(player.getUniqueId()).gaveHeals;
 	                	if(System.currentTimeMillis() < getHealCooldown + 400) return;
-	                	Main.getPlugin().getConfig().set("Players." + player.getPlayer().getUniqueId().toString() + ".getHealsCooldown", System.currentTimeMillis());
+	                	Main.ServerPlayers.get(player.getUniqueId()).gaveHeals = System.currentTimeMillis();
 	                	Kits.giveHeals(player);
 	                	player.playSound(player.getLocation(), Sound.valueOf("NOTE_PLING"), 1f,  1f);
 	                }

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -14,6 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -44,6 +46,8 @@ public class Main extends JavaPlugin implements Listener {
 	public static Main getPlugin() {
 		return plugin;
 	}
+	
+	public static HashMap<UUID, ServerPlayer> ServerPlayers = new HashMap<UUID, ServerPlayer>();
 	@Override
 	public void onEnable() {
 		//startup
@@ -91,11 +95,13 @@ public class Main extends JavaPlugin implements Listener {
 		this.getCommand("report").setExecutor(new adminPerms());
 		this.getCommand("soup").setExecutor(new Kits());
 		this.getCommand("pots").setExecutor(new Kits());
+		
 		this.getCommand("give").setExecutor(new buildBlocks());
+		this.getCommand("pay").setExecutor(new Economy());
 		
 		
 		
-		
+		this.getCommand("pwarp").setExecutor(new playerWarps());
 		
 		
 		
@@ -109,13 +115,13 @@ public class Main extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new baseSystem(), this);
 		this.getServer().getPluginManager().registerEvents(new signShop(), this);
 		this.getServer().getPluginManager().registerEvents(new bountyMenuEvents(), this);
-		
-		
+		this.getServer().getPluginManager().registerEvents(new baseSystem(), this);
+		this.getServer().getPluginManager().registerEvents(new kitItems(), this);
 		this.getServer().getPluginManager().registerEvents(new bountyBoard(), this);
 		
 		
 		this.getServer().getPluginManager().registerEvents(new shopPortal(), this);
-		
+
 		this.saveDefaultConfig();
 		
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
@@ -130,6 +136,7 @@ public class Main extends JavaPlugin implements Listener {
 		
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			kitScoreboard.createBoard(online);
+			ServerPlayers.put(online.getUniqueId(), new ServerPlayer(online.getPlayer()));
 		}
 		
 
@@ -139,7 +146,7 @@ public class Main extends JavaPlugin implements Listener {
 		
 		runnable();
 		
-		
+	
 
 	}
 	
@@ -206,7 +213,7 @@ public class Main extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
     }
-    
+
 	@EventHandler()
 	public void onJoin(PlayerJoinEvent event) {
 		if(!getConfig().contains("Players." + event.getPlayer().getUniqueId().toString())) {
@@ -225,6 +232,9 @@ public class Main extends JavaPlugin implements Listener {
 			Location loc = new Location(Main.getPlugin().getServer().getWorld("Kit World"), 11.505743587904526, 156.0, -38.62288293331645);
 			event.getPlayer().teleport(loc);
 		}
+		
+		
+		ServerPlayers.put(event.getPlayer().getUniqueId(), new ServerPlayer(event.getPlayer()));
 		kitScoreboard.createBoard(event.getPlayer());
 		System.out.println(getConfig().getBoolean("Players." + event.getPlayer().getUniqueId().toString() + ".Muted"));
 		if(leaderboardStatues.Statues == null) return;
@@ -259,8 +269,6 @@ public class Main extends JavaPlugin implements Listener {
 				double creditBoost = Double.parseDouble(Main.getPlugin().getConfig().getString("Players." + killer.getUniqueId() + ".creditBoost"));
 				long randomCredits = ThreadLocalRandom.current().nextLong(90, 120 + 1);
 				long multipliedCredits = (long) Math.round(randomCredits * creditBoost);		
-				killer.sendMessage(Long.toString(randomCredits));
-				killer.sendMessage(Long.toString(multipliedCredits));
 				Economy.updateCredits(killer, multipliedCredits);
 				String playerName = ChatColor.stripColor(player.getDisplayName());
 				killer.sendMessage(ChatColor.GREEN + "You received " + ChatColor.GOLD + multipliedCredits + " credits " + ChatColor.GREEN + "for killing " + playerName);
@@ -271,7 +279,6 @@ public class Main extends JavaPlugin implements Listener {
 				Main.getPlugin().saveConfig();
 				deathsStat = Main.getPlugin().getConfig().getLong("Players." + killer.getUniqueId() + ".deaths");
 				killerBoard.getTeam("statsKills").setPrefix(ChatColor.AQUA + "Kills: " + ChatColor.GOLD + Long.toString(killsStat));
-				System.out.println(kitScoreboard.calculateKDR(killer, killsStat, deathsStat) + "kdr");
 				killerBoard.getTeam("statsKDR").setSuffix(ChatColor.GOLD + kitScoreboard.calculateKDR(killer, killsStat, deathsStat));
 				
 				long credits = Main.getPlugin().getConfig().getLong("Players." + killer.getUniqueId() + ".credits");

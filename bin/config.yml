@@ -52,5 +52,60 @@ bannedBlocks:
   - monster_egg
   - ender_pearl
   - skull_item
+  - glowstone_dust
+  - nether_stalk
+  - brewing_stand
+  - blaze_rod
+  - magma_cream
+  - ghast_tear
+  - golden_carrot
+  - carrot
+  - rabbit_foot
+  - blaze_powder
+  - sugar
+  - sugar_cane
+  - spider_eye
+  - fermented_spider_eye
+  - golden_apple
+  - leather_helmet
+  - leather_chestplate
+  - leather_leggings
+  - leather_boots
+  - iron_helmet
+  - iron_chestplate
+  - iron_leggings
+  - iron_boots
+  - gold_helmet
+  - gold_chestplate
+  - gold_leggings
+  - gold_boots
+  - diamond_helmet
+  - diamond_chestplate
+  - diamond_leggings
+  - diamond_boots
+  - wood_sword
+  - wood_axe
+  - iron_sword
+  - iron_axe
+  - gold_sword
+  - gold_axe
+  - diamond_sword
+  - diamond_axe
+  - bow
+  - arrow
+  - potion
+  - glass_bottle
+  
+  - flint
+  - string
+  - exp_bottle
+  - enchanted_book
+  - brown_mushroom
+  - red_mushroom
+  - bowl
+  - egg
+  - snow
+  - snow_ball
+  
   
 Players:

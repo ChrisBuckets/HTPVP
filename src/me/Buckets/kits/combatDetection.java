@@ -3,6 +3,7 @@ package me.Buckets.kits;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -47,6 +48,10 @@ public class combatDetection implements Listener{
 				return;
 			}
 			
+			if(e.getDamager() instanceof Fireball) {
+				fireballTagPlayer(e);
+				return;
+			}
 			tagPlayer(e);
 			
 			
@@ -67,6 +72,27 @@ public class combatDetection implements Listener{
 		combatTag.tagPlayer(attacked);
 	}
 	
+	public static void fireballTagPlayer(EntityDamageByEntityEvent e) {
+		if(e.getDamage() == 0) return;
+		Fireball f = (Fireball) e.getDamager();
+		Player attacker = (Player) f.getShooter();	
+		if(!(e.getEntity() instanceof Player)) return;
+		Player attacked = (Player) e.getEntity();
+		attacked.damage(13.4, attacker);
+		if(Kits.players.contains(attacker.getUniqueId())) {
+			Kits.players.remove(attacker.getUniqueId());
+		}
+		
+		if(Kits.players.contains(attacked.getUniqueId())) {
+			Kits.players.remove(attacked.getUniqueId());
+		}
+		
+		combatTag.tagPlayer(attacker);
+		combatTag.tagPlayer(attacked);
+		
+
+	}
+	
 	public static void arrowTagPlayer(EntityDamageByEntityEvent e) {
 		if(e.getDamage() == 0) return;
 		Arrow arrow = (Arrow) e.getDamager();
@@ -79,6 +105,9 @@ public class combatDetection implements Listener{
 		if(Kits.players.contains(attacked.getUniqueId())) {
 			Kits.players.remove(attacked.getUniqueId());
 		}
+		
+		combatTag.tagPlayer(attacker);
+		combatTag.tagPlayer(attacked);
 	}
 	
 	@EventHandler
@@ -96,6 +125,8 @@ public class combatDetection implements Listener{
 	@EventHandler
 	public static void playerLeave(PlayerQuitEvent e) {
 		Player player = (Player) e.getPlayer();
+		Main.ServerPlayers.remove(player.getUniqueId());
+		System.out.println(Main.ServerPlayers);
 		System.out.println(Kits.players.toString() + "players");
 		if(Kits.players.contains(player.getUniqueId())) {
 			Kits.players.remove(player.getUniqueId());

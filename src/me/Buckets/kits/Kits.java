@@ -160,7 +160,7 @@ public class Kits implements CommandExecutor {
 	
 	
 	public static void createKitSelection() {
-		kitSelection = Bukkit.createInventory(null,  9, ChatColor.GRAY + "Kits");
+		kitSelection = Bukkit.createInventory(null,  9, ChatColor.GOLD + "Kits");
 		
 		int index = 0;
 		for(String path : Main.getPlugin().getConfig().getConfigurationSection("kits").getKeys(false)) {

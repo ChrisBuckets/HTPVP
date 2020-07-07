@@ -51,9 +51,55 @@ public class Economy implements CommandExecutor {
 		        return true;
 		    } catch (final NumberFormatException e) {
 		    	player.sendMessage(ChatColor.RED + "Not a number.");
-		        return false;
+		        return true;
 		    }
 			
+			
+		}
+		
+		if(label.equalsIgnoreCase("pay")) {
+			if(args.length <= 1) {
+				player.sendMessage(ChatColor.RED + "Usage: /pay [player] [amount]");
+				return true;
+			}
+			
+			Player target = Bukkit.getPlayer(args[0]);
+			if(target == null) {
+				player.sendMessage(ChatColor.RED + "Player not found.");
+				return true;
+			}
+			
+		    try {
+		    	long amount = Long.parseLong(args[1]);
+		    	if(amount <=0) {
+		    		player.sendMessage(ChatColor.RED + "Invalid number.");
+		    		return true;
+		    	}
+			    if(!checkPlayerMoney(player, amount)) {
+			    	player.sendMessage(ChatColor.RED + "Not enough credits.");
+			    	return true;
+			    }
+			    updateCredits(player, -amount);
+			    updateCredits(target, amount);
+			    
+			    Scoreboard playerBoard = player.getScoreboard();
+			    Scoreboard targetBoard = target.getScoreboard();
+			    long playerCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
+			    long targetCredits = Main.getPlugin().getConfig().getLong("Players." + target.getUniqueId() + ".credits");
+			    playerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + playerCredits);
+				targetBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + targetCredits);
+				player.setScoreboard(playerBoard);
+				target.setScoreboard(targetBoard);
+				player.sendMessage(ChatColor.GREEN + "You gave " + args[1] + " credits to " + ChatColor.stripColor(target.getDisplayName()));
+				target.sendMessage(ChatColor.GREEN + "You received " + args[1] + " credits from " + player.getDisplayName());
+		    } catch(Exception e) {
+		    	player.sendMessage(ChatColor.RED + "Not a number.");
+		        return true;
+		    }
+		    
+
+		    
+
 			
 		}
 		return false;
