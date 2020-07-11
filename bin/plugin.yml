@@ -40,7 +40,14 @@ commands:
   shop:
   npcadd:
   give:
- 
- 
   pay:
   pwarp:
+  
+  whisper:
+  w:
+  msg:
+  pm:
+  tell:
+  reply:
+  r:
+  

@@ -184,10 +184,11 @@ public class leaderboardStatues implements CommandExecutor {
 		kdrHologram.teleport(text);
 		kdrLabelHologram.teleport(labelText);
 		double bestStat = 0.00;
-		String uuid = Bukkit.getPlayer("FishFr0g").getUniqueId().toString();
+		String uuid = Bukkit.getOfflinePlayer("FishFr0g").getUniqueId().toString();
 		for(String path : Main.getPlugin().getConfig().getConfigurationSection("Players.").getKeys(false)) {
 			long kills = Main.getPlugin().getConfig().getLong("Players." + path + ".kills");
 			long deaths = Main.getPlugin().getConfig().getLong("Players." + path + ".deaths");
+			if(deaths <= 0) continue;
 			double kdr = (double) kills / (double) deaths;
 			if(kdr > bestStat) {
 				bestStat = kdr;
@@ -253,7 +254,7 @@ public class leaderboardStatues implements CommandExecutor {
 		creditsHologram.teleport(text);
 		creditsLabelHologram.teleport(labelText);
 		long bestStat = 0;
-		String uuid = Bukkit.getPlayer("FishFr0g").getUniqueId().toString();
+		String uuid = Bukkit.getOfflinePlayer("FishFr0g").getUniqueId().toString();
 		for(String path : Main.getPlugin().getConfig().getConfigurationSection("Players.").getKeys(false)) {
 			long credits= Main.getPlugin().getConfig().getLong("Players." + path + ".credits");
 			if(credits > bestStat) {

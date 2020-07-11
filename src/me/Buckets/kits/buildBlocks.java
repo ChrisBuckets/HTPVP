@@ -58,10 +58,14 @@ public class buildBlocks implements CommandExecutor {
 			if(Material.matchMaterial(args[0].toUpperCase()) == null && !args[0].equalsIgnoreCase("sprucelog") && !args[0].equalsIgnoreCase("sprucewood") && 
 					!args[0].equalsIgnoreCase("birchlog") && !args[0].equalsIgnoreCase("birchwood") && 
 					!args[0].equalsIgnoreCase("junglelog") && !args[0].equalsIgnoreCase("junglewood") &&
-					!args[0].equalsIgnoreCase("acacialog") && !args[0].equalsIgnoreCase("acaciawood")) {
+					!args[0].equalsIgnoreCase("acacialog") && !args[0].equalsIgnoreCase("acaciawood") &&
+					!args[0].equalsIgnoreCase("quartz_pillar") && !args[0].equalsIgnoreCase("quartz_chiseled"))
+			{
 				player.sendMessage(ChatColor.RED + "Invalid item.");
 				return true;
 			}
+			
+			
 			ItemStack item = new ItemStack(Material.DIAMOND_BLOCK, Integer.parseInt(args[1]));
 			
 			if(args[0].equalsIgnoreCase("sprucelog")) item = new ItemStack(Material.LOG, Integer.parseInt(args[1]), (short) 1);
@@ -72,6 +76,9 @@ public class buildBlocks implements CommandExecutor {
 			if(args[0].equalsIgnoreCase("junglewood")) item = new ItemStack(Material.WOOD, Integer.parseInt(args[1]), (short) 3);
 			if(args[0].equalsIgnoreCase("acacialog")) item = new ItemStack(Material.LOG_2, Integer.parseInt(args[1]));
 			if(args[0].equalsIgnoreCase("acaciawood")) item = new ItemStack(Material.WOOD, Integer.parseInt(args[1]), (short) 4);
+			if(args[0].equalsIgnoreCase("quartz_chiseled")) item = new ItemStack(Material.QUARTZ_BLOCK, Integer.parseInt(args[1]), (short) 1);
+			if(args[0].equalsIgnoreCase("quartz_pillar")) item = new ItemStack(Material.QUARTZ_BLOCK, Integer.parseInt(args[1]), (short) 2);
+			//If Still diamond block, give them item that they input in the command
 			if(item.getType().equals(Material.DIAMOND_BLOCK)) item = new ItemStack(Material.matchMaterial(args[0]), Integer.parseInt(args[1]));
 			player.getInventory().addItem(item);
 			player.sendMessage(ChatColor.GREEN + "Item received.");

@@ -96,6 +96,10 @@ public class Kits implements CommandExecutor {
 		if(label.equalsIgnoreCase("kit")) {
 			if(sender instanceof Player) {
 				Player player = (Player) sender;
+				if(combatTag.checkTagged(player)) {
+					player.sendMessage(ChatColor.RED + "You can't redeem kits while in combat.");
+					return true;
+				}
 				if(args.length <= 0) {
 					String kitList = ChatColor.YELLOW + "Kits: " + ChatColor.WHITE + "";
 					for(String path : Main.getPlugin().getConfig().getConfigurationSection("kits").getKeys(false)) {
@@ -150,6 +154,10 @@ public class Kits implements CommandExecutor {
 		if(label.equalsIgnoreCase("kits") ) {
 			if(sender instanceof Player) {
 				Player player = (Player) sender;
+				if(combatTag.checkTagged(player)) {
+					player.sendMessage(ChatColor.RED + "You can't redeem kits while in combat.");
+					return true;
+				}
 				player.openInventory(kitSelection);
 				return true;
 			}

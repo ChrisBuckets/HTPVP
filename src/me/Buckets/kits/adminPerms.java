@@ -57,7 +57,7 @@ public class adminPerms implements CommandExecutor{
 				return true;
 			}
 			System.out.println(reason);
-			playerToKick.kickPlayer(reason);
+			playerToKick.kickPlayer(ChatColor.RED + "You were kicked by " + player.getName() + " for: " + reason);
 			Bukkit.broadcastMessage(ChatColor.RED + ChatColor.stripColor(player.getDisplayName()) + ChatColor.RED + " has kicked " + playerToKick.getDisplayName() + ChatColor.RED + " for reason: " + ChatColor.RED + reason);
 			return true;
 		}

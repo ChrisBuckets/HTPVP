@@ -104,6 +104,13 @@ public class Main extends JavaPlugin implements Listener {
 		this.getCommand("pwarp").setExecutor(new playerWarps());
 		
 		
+		this.getCommand("msg").setExecutor(new Messages());
+		this.getCommand("whisper").setExecutor(new Messages());
+		this.getCommand("w").setExecutor(new Messages());
+		this.getCommand("pm").setExecutor(new Messages());
+		this.getCommand("tell").setExecutor(new Messages());
+		this.getCommand("reply").setExecutor(new Messages());
+		this.getCommand("r").setExecutor(new Messages());
 		
 		
 		this.getCommand("deletewarp").setExecutor(new adminPerms());
@@ -119,9 +126,15 @@ public class Main extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new kitItems(), this);
 		this.getServer().getPluginManager().registerEvents(new bountyBoard(), this);
 		
+		this.getServer().getPluginManager().registerEvents(new playerWarpBoard(), this);
+		
+		
+		this.getServer().getPluginManager().registerEvents(new playerWarpMenuEvents(), this);
+		
 		
 		this.getServer().getPluginManager().registerEvents(new shopPortal(), this);
 
+	
 		this.saveDefaultConfig();
 		
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {

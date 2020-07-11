@@ -29,6 +29,8 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+import net.md_5.bungee.api.ChatColor;
+
 
 public class baseSystem implements Listener {
 	public static WorldEditPlugin getWorldEdit() {
@@ -82,11 +84,35 @@ public class baseSystem implements Listener {
     
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
+    	Player player = (Player) event.getPlayer();
     	if(event.getPlayer() != null) {
-    		Player player = (Player) event.getPlayer();
     		if(player.hasPermission("group.admin")) return;
-    		if(player.hasPermission("build")) return;
+    		if(player.hasPermission("build")) {
+    			RegionContainer container = createBase.getWorldGuard().getRegionContainer();
+    			RegionQuery query = container.createQuery();
+
+    			ApplicableRegionSet set = query.getApplicableRegions(player.getLocation());
+    			if(event.getBlock().getType() == Material.CHEST) {
+        		    for (ProtectedRegion region : set) {
+        		    	
+        		    	if (region.getId().contains("playerwarp")) {
+        		    		
+        		    		event.setCancelled(true);
+        		    		break;
+        		    		
+        		    		
+        		    		
+        		    	}
+        		    	
+        		    }
+     
+    			}
+
+    		}
+    		return;
     	}
+	    
+	   
     	if(event.getBlock().getType() == Material.CHEST || event.getBlock().getType() == Material.ANVIL || event.getBlock().getType() == Material.BREWING_STAND || event.getBlock().getType().toString().endsWith("WOOL")) return;
     	event.setCancelled(true);
     }

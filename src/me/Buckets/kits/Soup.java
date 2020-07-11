@@ -32,8 +32,8 @@ public class Soup implements Listener {
 	
 	@EventHandler
 	public void disableHunger(FoodLevelChangeEvent e) {
-		e.setCancelled(true);
 		e.setFoodLevel(20);
+		e.setCancelled(true);
 	}
 	
 	

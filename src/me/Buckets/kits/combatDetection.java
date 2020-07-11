@@ -59,7 +59,11 @@ public class combatDetection implements Listener{
 	
 	public static void tagPlayer(EntityDamageByEntityEvent e) {
 		if(e.getDamage() == 0) return;
-		Player attacker = (Player) e.getDamager();	
+		Player attacker = (Player) e.getDamager();
+		if(Main.ServerPlayers.get(attacker.getUniqueId()).isInvis) {
+			e.setCancelled(true);
+			return;
+		}
 		Player attacked = (Player) e.getEntity();
 		if(Kits.players.contains(attacker.getUniqueId())) {
 			Kits.players.remove(attacker.getUniqueId());
@@ -75,7 +79,11 @@ public class combatDetection implements Listener{
 	public static void fireballTagPlayer(EntityDamageByEntityEvent e) {
 		if(e.getDamage() == 0) return;
 		Fireball f = (Fireball) e.getDamager();
-		Player attacker = (Player) f.getShooter();	
+		Player attacker = (Player) f.getShooter();
+		if(Main.ServerPlayers.get(attacker.getUniqueId()).isInvis) {
+			e.setCancelled(true);
+			return;
+		}
 		if(!(e.getEntity() instanceof Player)) return;
 		Player attacked = (Player) e.getEntity();
 		attacked.damage(13.4, attacker);
@@ -97,6 +105,10 @@ public class combatDetection implements Listener{
 		if(e.getDamage() == 0) return;
 		Arrow arrow = (Arrow) e.getDamager();
 		Player attacker = (Player) arrow.getShooter();	
+		if(Main.ServerPlayers.get(attacker.getUniqueId()).isInvis) {
+			e.setCancelled(true);
+			return;
+		}
 		Player attacked = (Player) e.getEntity();
 		if(Kits.players.contains(attacker.getUniqueId())) {
 			Kits.players.remove(attacker.getUniqueId());
@@ -153,7 +165,7 @@ public class combatDetection implements Listener{
 		if(!Kits.players.contains(player.getUniqueId())) {
 			Kits.players.add(player.getUniqueId());
 		}
-		
+		if(Main.ServerPlayers.get(player.getUniqueId()).isMonked) Main.ServerPlayers.get(player.getUniqueId()).isMonked = false;
 		if(combatTag.checkTagged(player)) {
 			Bukkit.getServer().getScheduler().cancelTask(combatTag.playerTags.get(player));
 			combatTag.playerTags.remove(player);

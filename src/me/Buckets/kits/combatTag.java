@@ -44,7 +44,7 @@ public class combatTag {
 			return;
 		}
 		
-		int playerTag = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
+		int playerTag = Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getPlugin(), new Runnable() {
             public void run() {
             	player.sendMessage(ChatColor.GRAY + "You are no longer in combat and can safely log out.");
             	playerTags.remove(player);
