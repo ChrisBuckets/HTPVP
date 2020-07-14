@@ -18,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -112,7 +113,7 @@ public class Main extends JavaPlugin implements Listener {
 		this.getCommand("reply").setExecutor(new Messages());
 		this.getCommand("r").setExecutor(new Messages());
 		
-		
+		this.getCommand("enchant").setExecutor(new Enchant()); 
 		this.getCommand("deletewarp").setExecutor(new adminPerms());
 		
 		this.getCommand("shop").setExecutor(new adminPerms());
@@ -168,6 +169,13 @@ public class Main extends JavaPlugin implements Listener {
 		//shutdowns
 		//reloads
 		//plugin reloads
+		for (Player online : Bukkit.getOnlinePlayers()) {
+			if(Main.ServerPlayers.get(online.getUniqueId()).landmines.size() > 0) {
+				for (Block landmine : Main.ServerPlayers.get(online.getUniqueId()).landmines.keySet()) {
+					landmine.setType(Material.AIR);
+				}
+			}
+		}
 	}
 	
 	public void runnable() {

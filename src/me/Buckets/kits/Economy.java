@@ -13,9 +13,26 @@ import net.md_5.bungee.api.ChatColor;
 public class Economy implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = (Player) sender;
-		if(label.equalsIgnoreCase("money") || label.equalsIgnoreCase("balance") || label.equalsIgnoreCase("credits")) {
-			long credits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
-			player.sendMessage(ChatColor.GOLD + "Credits: " + ChatColor.WHITE + credits);
+		if(label.equalsIgnoreCase("money") || label.equalsIgnoreCase("balance") || label.equalsIgnoreCase("credits")) {	
+			if(args.length <= 0) {
+				
+				long credits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
+				player.sendMessage(ChatColor.GOLD + "Credits: " + ChatColor.WHITE + credits);
+				
+				
+				return true;
+				
+				
+			}
+			
+			
+			Player target = Bukkit.getPlayer(args[1]);
+			if(target == null) {
+				player.sendMessage(ChatColor.RED + "Player not found.");
+				return true;
+			}
+			long credits = Main.getPlugin().getConfig().getLong("Players." + target.getUniqueId() + ".credits");
+			player.sendMessage(ChatColor.GOLD + target.getName() + "'s Credits: " + ChatColor.WHITE + credits);
 		}
 		
 		if(label.equalsIgnoreCase("givecredits")) {

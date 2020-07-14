@@ -85,6 +85,14 @@ public class playerWarps implements CommandExecutor{
 						BlockVector max = new BlockVector(x - 13, 36, z + 14);	
 						ProtectedRegion region = new ProtectedCuboidRegion(ChatColor.stripColor(player.getDisplayName()) + "playerwarp", min, max);
 						region.setFlag(DefaultFlag.PVP, StateFlag.State.ALLOW);
+						region.setFlag(DefaultFlag.POTION_SPLASH, StateFlag.State.ALLOW);
+						region.setFlag(DefaultFlag.USE, StateFlag.State.ALLOW);
+						region.setFlag(DefaultFlag.DENY_MESSAGE, "-e");
+						region.setFlag(DefaultFlag.CREEPER_EXPLOSION, StateFlag.State.DENY);
+						region.setFlag(DefaultFlag.FIRE_SPREAD, StateFlag.State.DENY);
+						region.setFlag(DefaultFlag.LAVA_FIRE, StateFlag.State.DENY);
+						region.setFlag(DefaultFlag.TNT, StateFlag.State.DENY);
+						region.setFlag(DefaultFlag.GHAST_FIREBALL, StateFlag.State.DENY);
 						RegionContainer container = createBase.getWorldGuard().getRegionContainer();
 						RegionManager regions = container.get(player.getWorld());
 						regions.addRegion(region);

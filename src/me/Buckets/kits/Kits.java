@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -18,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
@@ -178,7 +180,7 @@ public class Kits implements CommandExecutor {
 			ItemStack item = new ItemStack(Material.matchMaterial(menuItem));
 			ItemMeta meta = item.getItemMeta();
 			
-			String kitName = Main.getPlugin().getConfig().getString("kits." + path + ".menuName");
+			String kitName = Main.getPlugin().getConfig().getString("kits." + path + ".menuName"); 
 			System.out.println(kitName + "kit name");
 			String kitColorCode = Main.getPlugin().getConfig().getString("kits." + path + ".menuColorCode");
 			meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&" + kitColorCode + kitName));
@@ -206,18 +208,55 @@ public class Kits implements CommandExecutor {
 	public static void giveItem(Player player, String [] itemParams) {
 		String itemName = itemParams[0];
 		int itemAmount = 1;
-		if(itemParams.length >= 2) itemAmount = Integer.parseInt(itemParams[1]);
-		ItemStack item = new ItemStack(Material.matchMaterial(itemName), itemAmount);
-		if(itemParams.length >= 3) {
-			String[] enchantmentList = itemParams[2].split("/");
-			System.out.println(enchantmentList.length + "length");
-			for(int j = 0; j < enchantmentList.length; j++) {
-				String[] enchantmentParams = enchantmentList[j].split(":");
-				String enchantmentName = enchantmentParams[0];
-				String enchantmentLevel = enchantmentParams[1];
-				System.out.println(enchantmentName + enchantmentLevel);
-				item.addEnchantment(Enchantment.getByName(enchantmentName), Integer.parseInt(enchantmentLevel));
+		ItemStack item = new ItemStack(Material.DIAMOND_SWORD, itemAmount);
+		if(!itemName.equalsIgnoreCase("CUSTOM") && !itemName.equalsIgnoreCase("KITITEM")) {
+			if(itemParams.length >= 2) itemAmount = Integer.parseInt(itemParams[1]);
+			item = new ItemStack(Material.matchMaterial(itemName), itemAmount);
+			if(itemParams.length >= 3) {
+				String[] enchantmentList = itemParams[2].split("/");
+				System.out.println(enchantmentList.length + "length");
+				for(int j = 0; j < enchantmentList.length; j++) {
+					String[] enchantmentParams = enchantmentList[j].split(":");
+					String enchantmentName = enchantmentParams[0];
+					String enchantmentLevel = enchantmentParams[1];
+					System.out.println(enchantmentName + enchantmentLevel);
+					item.addUnsafeEnchantment(Enchantment.getByName(enchantmentName), Integer.parseInt(enchantmentLevel));
+				}
 			}
+		}
+
+		
+		if(itemName.equalsIgnoreCase("KITITEM")) {
+			item = new ItemStack(Material.matchMaterial(itemParams[1]));
+			ItemMeta itemMeta = item.getItemMeta();
+			String[] itemNameParams = itemParams[2].split(":");
+			String[] itemNameDisplay = itemNameParams[1].split("/");
+			String getItemNameDisplay = "";
+			for(int i = 0; i < itemNameDisplay.length; i++) {
+				if(i != itemNameDisplay.length - 1) getItemNameDisplay += itemNameDisplay[i] + " ";
+				if(i == itemNameDisplay.length - 1) getItemNameDisplay += itemNameDisplay[i];
+			}
+					
+			itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&" + itemNameParams[0] + getItemNameDisplay));
+			item.setItemMeta(itemMeta);
+		}
+		if(itemName.equalsIgnoreCase("CUSTOM")) {
+			String[] color = itemParams[1].split(":");
+			item = new ItemStack(Material.matchMaterial(itemParams[2]));
+			if(itemParams.length >= 4) {
+				String[] enchantmentList = itemParams[3].split("/");
+				System.out.println(enchantmentList.length + "length");
+				for(int j = 0; j < enchantmentList.length; j++) {
+					String[] enchantmentParams = enchantmentList[j].split(":");
+					String enchantmentName = enchantmentParams[0];
+					String enchantmentLevel = enchantmentParams[1];
+					System.out.println(enchantmentName + enchantmentLevel);
+					item.addUnsafeEnchantment(Enchantment.getByName(enchantmentName), Integer.parseInt(enchantmentLevel));
+				}
+			}
+			LeatherArmorMeta m = (LeatherArmorMeta) item.getItemMeta();
+			m.setColor(Color.fromRGB(Integer.parseInt(color[0]), Integer.parseInt(color[1]), Integer.parseInt(color[2])));;
+			item.setItemMeta(m);
 		}
 
 		player.getInventory().addItem(item);
@@ -247,30 +286,56 @@ public class Kits implements CommandExecutor {
 		for(int i = 0; i < kitArmor.size(); i++) {
 			String[] armorParams = kitArmor.get(i).split(" ");
 			String itemName = armorParams[0];
-			int itemAmount = 1;
-			if(armorParams.length >= 2) itemAmount = Integer.parseInt(armorParams[1]);
-			ItemStack item = new ItemStack(Material.matchMaterial(itemName), itemAmount);
-			if(armorParams.length >= 3) {
-				String[] enchantmentList = armorParams[2].split("/");
-				System.out.println(enchantmentList.length + "length");
-				for(int j = 0; j < enchantmentList.length; j++) {
-					String[] enchantmentParams = enchantmentList[j].split(":");
-					String enchantmentName = enchantmentParams[0];
-					String enchantmentLevel = enchantmentParams[1];
-					System.out.println(enchantmentName + enchantmentLevel);
-					item.addEnchantment(Enchantment.getByName(enchantmentName), Integer.parseInt(enchantmentLevel));
+			ItemStack item = new ItemStack(Material.IRON_CHESTPLATE, 1);
+			if(!itemName.equalsIgnoreCase("CUSTOM")) {
+				int itemAmount = 1;
+				item = new ItemStack(Material.matchMaterial(itemName), itemAmount);
+				if(armorParams.length >= 3) {
+					String[] enchantmentList = armorParams[2].split("/");
+					System.out.println(enchantmentList.length + "length");
+					for(int j = 0; j < enchantmentList.length; j++) {
+						String[] enchantmentParams = enchantmentList[j].split(":");
+						String enchantmentName = enchantmentParams[0];
+						String enchantmentLevel = enchantmentParams[1];
+						System.out.println(enchantmentName + enchantmentLevel);
+						item.addUnsafeEnchantment(Enchantment.getByName(enchantmentName), Integer.parseInt(enchantmentLevel));
+					}
 				}
 			}
 			
-			if(itemName.equalsIgnoreCase("IRON_HELMET") || itemName.equalsIgnoreCase("DIAMOND_HELMET") || itemName.equalsIgnoreCase("CHAINMAIL_HELMET")) player.getInventory().setHelmet(item);
-			if(itemName.equalsIgnoreCase("IRON_CHESTPLATE") || itemName.equalsIgnoreCase("DIAMOND_CHESTPLATE") || itemName.equalsIgnoreCase("CHAINMAIL_CHESTPLATE")) player.getInventory().setChestplate(item);
-			if(itemName.equalsIgnoreCase("IRON_LEGGINGS") || itemName.equalsIgnoreCase("DIAMOND_LEGGINGS") || itemName.equalsIgnoreCase("CHAINMAIL_LEGGINGS")) player.getInventory().setLeggings(item);
-			if(itemName.equalsIgnoreCase("IRON_BOOTS") || itemName.equalsIgnoreCase("DIAMOND_BOOTS") || itemName.equalsIgnoreCase("CHAINMAIL_BOOTS")) player.getInventory().setBoots(item);
+			if(itemName.equalsIgnoreCase("CUSTOM")) {
+				itemName = armorParams[2];
+				String[] color = armorParams[1].split(":");
+				item = new ItemStack(Material.matchMaterial(armorParams[2]));
+				if(armorParams.length >= 4) {
+					String[] enchantmentList = armorParams[3].split("/");
+					System.out.println(enchantmentList.length + "length");
+					for(int j = 0; j < enchantmentList.length; j++) {
+						String[] enchantmentParams = enchantmentList[j].split(":");
+						String enchantmentName = enchantmentParams[0];
+						String enchantmentLevel = enchantmentParams[1];
+						System.out.println(enchantmentName + enchantmentLevel);
+						item.addUnsafeEnchantment(Enchantment.getByName(enchantmentName), Integer.parseInt(enchantmentLevel));
+					}
+				}
+				LeatherArmorMeta m = (LeatherArmorMeta) item.getItemMeta();
+				m.setColor(Color.fromRGB(Integer.parseInt(color[0]), Integer.parseInt(color[1]), Integer.parseInt(color[2])));;
+				item.setItemMeta(m);
+			}
+
+			
+			if(itemName.equalsIgnoreCase("IRON_HELMET") || itemName.equalsIgnoreCase("DIAMOND_HELMET") || itemName.equalsIgnoreCase("CHAINMAIL_HELMET") || itemName.equalsIgnoreCase("LEATHER_HELMET")) player.getInventory().setHelmet(item);
+			if(itemName.equalsIgnoreCase("IRON_CHESTPLATE") || itemName.equalsIgnoreCase("DIAMOND_CHESTPLATE") || itemName.equalsIgnoreCase("CHAINMAIL_CHESTPLATE") || itemName.equalsIgnoreCase("LEATHER_CHESTPLATE")) player.getInventory().setChestplate(item);
+			if(itemName.equalsIgnoreCase("IRON_LEGGINGS") || itemName.equalsIgnoreCase("DIAMOND_LEGGINGS") || itemName.equalsIgnoreCase("CHAINMAIL_LEGGINGS") || itemName.equalsIgnoreCase("LEATHER_LEGGINGS")) player.getInventory().setLeggings(item);
+			if(itemName.equalsIgnoreCase("IRON_BOOTS") || itemName.equalsIgnoreCase("DIAMOND_BOOTS") || itemName.equalsIgnoreCase("CHAINMAIL_BOOTS") || itemName.equalsIgnoreCase("LEATHER_BOOTS")) player.getInventory().setBoots(item);
 			
 
 		}
 		
 	}
+	
+
+	
 	
     public static int getEmptySlots(Player p) {
         PlayerInventory inventory = p.getInventory();

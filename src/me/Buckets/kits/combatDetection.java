@@ -137,6 +137,7 @@ public class combatDetection implements Listener{
 	@EventHandler
 	public static void playerLeave(PlayerQuitEvent e) {
 		Player player = (Player) e.getPlayer();
+		kitItems.clearLandMines(player);
 		Main.ServerPlayers.remove(player.getUniqueId());
 		System.out.println(Main.ServerPlayers);
 		System.out.println(Kits.players.toString() + "players");
