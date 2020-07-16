@@ -48,7 +48,7 @@ public class kitItems implements Listener {
 		Player player = event.getPlayer();
 		
 		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if(player.getInventory().getItemInHand().getItemMeta().hasDisplayName() && 
+			if(player.getInventory().getItemInHand().getItemMeta().getDisplayName() != null && 
 					player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.DARK_RED + "Fireball") ||
 					player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Landmine")) {
 				if(!checkPvpRegion(player)) {
@@ -57,7 +57,7 @@ public class kitItems implements Listener {
 				}
 			}
 			
-			if(player.getInventory().getItemInHand().getItemMeta().hasDisplayName() && 
+			if(player.getInventory().getItemInHand().getItemMeta().getDisplayName() != null && 
 					player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.DARK_RED + "Fireball")) {
 				if(!kitItems.checkKitItemCooldown(player, 5000, Main.ServerPlayers.get(player.getUniqueId()).usedFireball)) return;
 				Main.ServerPlayers.get(player.getUniqueId()).usedFireball = System.currentTimeMillis();
@@ -65,7 +65,7 @@ public class kitItems implements Listener {
 				return;
 			}
 			
-			if(player.getInventory().getItemInHand().getItemMeta().hasDisplayName() && 
+			if(player.getInventory().getItemInHand().getItemMeta().getDisplayName() != null && 
 					player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.GOLD + "Eagle Wing")) {
 				if(!kitItems.checkKitItemCooldown(player, 10000, Main.ServerPlayers.get(player.getUniqueId()).usedEagle)) return;
 				Main.ServerPlayers.get(player.getUniqueId()).usedEagle = System.currentTimeMillis();
@@ -89,8 +89,8 @@ public class kitItems implements Listener {
 				return;
 			}
 			
-			if(player.getInventory().getItemInHand().getItemMeta().hasDisplayName() && 
-					player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.WHITE + "Invisible Gem")) {
+			if(player.getInventory().getItemInHand().getItemMeta().getDisplayName() != null && 
+					player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.WHITE + "Invisibility Gem")) {
 				if(Main.ServerPlayers.get(player.getUniqueId()).isInvis) {
 					player.sendMessage(ChatColor.AQUA + "You are already invisible!");
 					return;
@@ -122,7 +122,7 @@ public class kitItems implements Listener {
 				
 			}
 			
-			if(player.getInventory().getItemInHand().getItemMeta().hasDisplayName() && 
+			if(player.getInventory().getItemInHand().getItemMeta().getDisplayName() != null && 
 					player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Landmine")) {
 				if(!kitItems.checkKitItemCooldown(player, 10000, Main.ServerPlayers.get(player.getUniqueId()).usedLandMine)) return;
 				Main.ServerPlayers.get(player.getUniqueId()).usedLandMine = System.currentTimeMillis();
@@ -165,24 +165,36 @@ public class kitItems implements Listener {
 
 		}
 		
-		if(event.getAction() == Action.PHYSICAL && event.getPlayer().getInventory().getItemInHand().getItemMeta().hasDisplayName() && 
-				event.getPlayer().getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Landmine")) {
-			player.getWorld().createExplosion(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), 1, false, false);
-			event.setCancelled(true);
-			//String landmineOwner = event.getClickedBlock().getMetadata("landmine").get(0).asString();
-			System.out.println(event.getClickedBlock().getMetadata("landmine") + "landmine");
-			//event.getPlayer().sendMessage(landmineOwner);
+		if(event.getAction() == Action.PHYSICAL) {
+			Boolean check = false;
 			for (Player online : Bukkit.getOnlinePlayers()) {
-				if(Main.ServerPlayers.get(online.getUniqueId()).landmines.size() > 0) {
-					Block landmine = event.getClickedBlock();
-					if(Main.ServerPlayers.get(online.getUniqueId()).landmines.containsKey(landmine)) {
-						event.getPlayer().damage(40, online);
-						online.sendMessage(ChatColor.AQUA + "You damaged " + event.getPlayer().getName() + " with your landmine!");
-						Main.ServerPlayers.get(online.getUniqueId()).landmines.remove(landmine);
+				if(Main.ServerPlayers.get(online.getUniqueId()).landmines.containsKey(event.getClickedBlock())) check = true;
+			}
+			
+			
+			
+			
+			
+			if(check) {
+				player.getWorld().createExplosion(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), 1, false, false);
+				event.setCancelled(true);
+				//String landmineOwner = event.getClickedBlock().getMetadata("landmine").get(0).asString();
+				System.out.println(event.getClickedBlock().getMetadata("landmine") + "landmine");
+				//event.getPlayer().sendMessage(landmineOwner);
+				for (Player online : Bukkit.getOnlinePlayers()) {
+					if(Main.ServerPlayers.get(online.getUniqueId()).landmines.size() > 0) {
+						Block landmine = event.getClickedBlock();
+						if(Main.ServerPlayers.get(online.getUniqueId()).landmines.containsKey(landmine)) {
+							event.getPlayer().damage(40, online);
+							online.sendMessage(ChatColor.AQUA + "You damaged " + event.getPlayer().getName() + " with your landmine!");
+							Main.ServerPlayers.get(online.getUniqueId()).landmines.remove(landmine);
+						}
 					}
 				}
+				event.getClickedBlock().setType(Material.AIR);
+				//event.getClickedBlock().getLocation().add(0, 1, 0).getBlock().setType(Material.AIR);
 			}
-			event.getClickedBlock().setType(Material.AIR);
+
 
 
 		}
@@ -198,7 +210,7 @@ public class kitItems implements Listener {
 	
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-    	if(event.getPlayer().getInventory().getItemInHand().getItemMeta().hasDisplayName() && 
+    	if(event.getPlayer().getInventory().getItemInHand().getItemMeta().getDisplayName() != null && 
 				event.getPlayer().getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Landmine")) {
     		event.setCancelled(true);
 			/*Player player = (Player) event.getPlayer();
@@ -260,19 +272,19 @@ public class kitItems implements Listener {
 
         if (event.getRightClicked().getType().equals(EntityType.PLAYER)) {
         	Player player = (Player) event.getRightClicked();
-        	if(player.getInventory().getItemInHand().getItemMeta().hasDisplayName() &&
-        			player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.DARK_GRAY + "Blinding Shard") ||
-        			player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.GOLD + "Monk Staff")) {
+        	if(event.getPlayer().getInventory().getItemInHand().getItemMeta().getDisplayName() != null &&
+        			event.getPlayer().getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.DARK_GRAY + "Blinding Shard") ||
+        			event.getPlayer().getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Monk Staff")) {
 				if(!checkPvpRegion(player)) {
-					player.sendMessage(ChatColor.RED + "You can't use this kit item here.");
+					event.getPlayer().sendMessage(ChatColor.RED + "You can't use this kit item here.");
 					return;
 				}
         	}
-        	if(player.getInventory().getItemInHand().getItemMeta().hasDisplayName() && 
-        			player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.GOLD + "Monk Staff")) {
+        	if(event.getPlayer().getInventory().getItemInHand().getItemMeta().getDisplayName() != null && 
+        			event.getPlayer().getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Monk Staff")) {
             	if(player.getInventory().getBoots() != null) {
             		if (Main.ServerPlayers.get(player.getUniqueId()).isMonked) return;
-            		if(!kitItems.checkKitItemCooldown(player, 45000, Main.ServerPlayers.get(player.getUniqueId()).usedMonk)) return;
+            		if(!kitItems.checkKitItemCooldown(event.getPlayer(), 45000, Main.ServerPlayers.get(event.getPlayer().getUniqueId()).usedMonk)) return;
             		Main.ServerPlayers.get(event.getPlayer().getUniqueId()).usedMonk = System.currentTimeMillis();
             		Main.ServerPlayers.get(player.getUniqueId()).isMonked = true;
             		ItemStack boots = player.getInventory().getBoots();
@@ -290,14 +302,14 @@ public class kitItems implements Listener {
                         		Main.ServerPlayers.get(player.getUniqueId()).isMonked = false;
                         	}
                         }
-                      }, 60);
+                      }, 100);
             	}
         	}
         	
         	
-        	if(player.getInventory().getItemInHand().getItemMeta().hasDisplayName() && 
-        			player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.DARK_GRAY + "Blinding Shard")) {
-        		if(!kitItems.checkKitItemCooldown(player, 15000, Main.ServerPlayers.get(player.getUniqueId()).usedBlindingShard)) return;
+        	if(event.getPlayer().getInventory().getItemInHand().getItemMeta().getDisplayName() != null && 
+        			event.getPlayer().getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.DARK_GRAY + "Blinding Shard")) {
+        		if(!kitItems.checkKitItemCooldown(event.getPlayer(), 15000, Main.ServerPlayers.get(event.getPlayer().getUniqueId()).usedBlindingShard)) return;
         		Main.ServerPlayers.get(event.getPlayer().getUniqueId()).usedBlindingShard = System.currentTimeMillis();
         		for (Player online : Bukkit.getOnlinePlayers()) online.playSound(player.getLocation(), Sound.GLASS, 1f,  1f);
         		player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1));

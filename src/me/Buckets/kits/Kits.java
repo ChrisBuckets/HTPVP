@@ -197,9 +197,9 @@ public class Kits implements CommandExecutor {
 		/*for (Material material : Material.values()) {
 			  System.out.println(material.toString());
 			}*/
-		ItemStack item = new ItemStack(Material.REDSTONE);
+		ItemStack item = new ItemStack(Material.BARRIER);
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(ChatColor.DARK_RED + "Close Menu");
+		meta.setDisplayName(ChatColor.DARK_RED + "Close");
 		item.setItemMeta(meta);
 		kitSelection.setItem(8, item);
 		

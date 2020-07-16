@@ -338,7 +338,7 @@ public class Main extends JavaPlugin implements Listener {
 		
 		Player player = (Player) event.getWhoClicked();
 		
-		if(event.getCurrentItem().getType().toString() == "REDSTONE") {
+		if(event.getCurrentItem().getType().toString() == "BARRIER") {
 			player.closeInventory();
 			return;
 		}

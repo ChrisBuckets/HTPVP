@@ -11,6 +11,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.Scoreboard;
@@ -30,18 +31,23 @@ public class signShop implements Listener {
 			    Sign sign = (Sign) event.getClickedBlock().getState();
 			    if(sign.getLine(0).equalsIgnoreCase(ChatColor.GREEN + "[BUY]")) {
 			    	String itemName = ChatColor.stripColor(sign.getLine(1));
-			    	String checkPotion[] = sign.getLine(1).split(":");
+			    	String itemForSale[] = sign.getLine(1).split(":");
 			    	String getAmount[] = sign.getLine(2).split("\\s+");
 			    	String getCredits[] = sign.getLine(3).split("\\s+");
 			    	if(Material.matchMaterial(itemName) == null) {
 
-			    		if(checkPotion[0].equals("POT")) {
-				    		signShop.buyPotion(player, checkPotion, getAmount, getCredits);
+			    		if(itemForSale[0].equals("POT")) {
+				    		signShop.buyPotion(player, itemForSale, getAmount, getCredits);
 				    		return;
+					    } else if(itemForSale[0].equals("KIT")) {
+					    	signShop.buyKitItems(player, itemForSale, getAmount, getCredits);
+					    	return;
 					    } else {
 				    		player.sendMessage(ChatColor.GOLD + "[SHOP] " + ChatColor.RED + "Invalid item listed.");
 				    		return;
 					    }
+			    		
+			    		
 			    	}
 			    	
 			    	if(getAmount.length <= 1) {
@@ -280,6 +286,96 @@ public class signShop implements Listener {
 		
 		ItemStack potionStack = potion.toItemStack(Integer.parseInt(amount));
     	player.getInventory().addItem(potionStack);
+    	player.sendMessage(ChatColor.GOLD + "[SHOP] " + ChatColor.GREEN + "Item purchased.");
+    	Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".credits", playerCredits - Integer.parseInt(credits));
+    	playerCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
+    	Scoreboard playerBoard = player.getScoreboard();
+		playerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + playerCredits);
+		player.setScoreboard(playerBoard);
+    	return;
+	}
+	
+	public static void buyKitItems(Player player, String[] checkPotion, String[] getAmount, String[] getCredits) {
+		if(!checkPotion[1].equals("FIREBALL") && !checkPotion[1].equals("MONK") && !checkPotion[1].equals("BLIND") && !checkPotion[1].equals("EAGLE") && !checkPotion[1].equals("MINE") && !checkPotion[1].equals("INVIS")) {
+    		player.sendMessage(ChatColor.RED + "Invalid kit item listed.");
+    		return;
+		}
+
+    	if(getAmount.length <= 1) {
+    		player.sendMessage(ChatColor.RED + "Invalid amount listed.");
+    		return;
+    	}
+    	
+    	if(getCredits.length <= 1) {
+    		player.sendMessage(ChatColor.RED + "Invalid credits listed.");
+    		return;
+    	}
+    	
+    	String amount = ChatColor.stripColor(getAmount[1]);
+    	String credits = ChatColor.stripColor(getCredits[0]);
+    	
+    	try {
+    		Integer.parseInt(amount);
+    	} catch (final NumberFormatException e) {
+    		player.sendMessage(ChatColor.RED + "Invalid amount listed.");
+    		return;
+    	}
+    	
+    	try {
+    		Integer.parseInt(credits);
+    	} catch (final NumberFormatException e) {
+    		player.sendMessage(ChatColor.RED + "Invalid credits listed.");
+    		return;
+    	}
+    	
+		if(player.getInventory().firstEmpty() == -1) {
+			player.sendMessage(ChatColor.RED + "You do not have enough space in your inventory.");
+			return;
+		}
+		
+    	long playerCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
+    	if(playerCredits < Integer.parseInt(credits)) {
+    		player.sendMessage(ChatColor.GOLD + "[SHOP] " + ChatColor.RED + "Not enough credits.");
+    		return;
+    	}
+    	
+
+    	
+    	
+    	ItemStack item = new ItemStack(Material.DIAMOND_SWORD, Integer.parseInt(amount));
+    	ItemMeta itemMeta = item.getItemMeta();
+		if(checkPotion[1].equals("FIREBALL")) {
+			item.setType(Material.FIREBALL);
+			itemMeta.setDisplayName(ChatColor.DARK_RED + "Fireball");
+			item.setItemMeta(itemMeta);
+		}
+		if(checkPotion[1].equals("MONK")) {
+			item.setType(Material.BLAZE_ROD);
+			itemMeta.setDisplayName(ChatColor.YELLOW + "Monk Staff");
+			item.setItemMeta(itemMeta);
+		}
+		if(checkPotion[1].equals("BLIND")) {
+			item.setType(Material.FLINT);
+			itemMeta.setDisplayName(ChatColor.DARK_GRAY + "Blinding Shard");
+			item.setItemMeta(itemMeta);
+		}
+		if(checkPotion[1].equals("EAGLE")) {
+			item.setType(Material.QUARTZ);
+			itemMeta.setDisplayName(ChatColor.GOLD + "Eagle Wing");
+			item.setItemMeta(itemMeta);
+		}
+		if(checkPotion[1].equals("MINE")) {
+			item.setType(Material.IRON_PLATE);
+			itemMeta.setDisplayName(ChatColor.GREEN + "Landmine");
+			item.setItemMeta(itemMeta);
+		}
+		if(checkPotion[1].equals("INVIS")) {
+			item.setType(Material.NETHER_STAR);
+			itemMeta.setDisplayName(ChatColor.WHITE + "Invisibility Gem");
+			item.setItemMeta(itemMeta);
+		}
+		
+    	player.getInventory().addItem(item);
     	player.sendMessage(ChatColor.GOLD + "[SHOP] " + ChatColor.GREEN + "Item purchased.");
     	Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".credits", playerCredits - Integer.parseInt(credits));
     	playerCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
