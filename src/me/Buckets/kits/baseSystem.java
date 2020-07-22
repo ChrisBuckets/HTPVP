@@ -92,7 +92,7 @@ public class baseSystem implements Listener {
     			RegionQuery query = container.createQuery();
 
     			ApplicableRegionSet set = query.getApplicableRegions(player.getLocation());
-    			if(event.getBlock().getType() == Material.CHEST) {
+    			if(event.getBlock().getType() == Material.CHEST || event.getBlock().getType() == Material.ANVIL || event.getBlock().getType() == Material.BREWING_STAND) {
         		    for (ProtectedRegion region : set) {
         		    	
         		    	if (region.getId().contains("playerwarp")) {

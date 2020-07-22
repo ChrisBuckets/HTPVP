@@ -59,7 +59,7 @@ public class bountyMenuEvents implements Listener{
 			player.openInventory(Bounty.getBountyMenus().get(index));
 			return;
 		}
-		player.sendMessage(Integer.toString(Bounty.getBountyMenus().indexOf(event.getInventory())));
+		//player.sendMessage(Integer.toString(Bounty.getBountyMenus().indexOf(event.getInventory())));
 		
 	}
 }

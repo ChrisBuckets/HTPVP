@@ -101,8 +101,8 @@ public class Main extends JavaPlugin implements Listener {
 		this.getCommand("pay").setExecutor(new Economy());
 		
 		
-		
 		this.getCommand("pwarp").setExecutor(new playerWarps());
+		this.getCommand("pw").setExecutor(new playerWarps());
 		
 		
 		this.getCommand("msg").setExecutor(new Messages());
@@ -117,6 +117,26 @@ public class Main extends JavaPlugin implements Listener {
 		this.getCommand("deletewarp").setExecutor(new adminPerms());
 		
 		this.getCommand("shop").setExecutor(new adminPerms());
+		
+		
+		this.getCommand("help").setExecutor(new adminPerms());
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		this.getCommand("rules").setExecutor(new adminPerms());
 		this.getServer().getPluginManager().registerEvents(new combatDetection(), this);
 		this.getServer().getPluginManager().registerEvents(new Soup(), this);
 		this.getServer().getPluginManager().registerEvents(new fillHeals(), this);
@@ -135,7 +155,8 @@ public class Main extends JavaPlugin implements Listener {
 		
 		this.getServer().getPluginManager().registerEvents(new shopPortal(), this);
 
-	
+		
+		this.getServer().getPluginManager().registerEvents(new repairSystem(), this);
 		this.saveDefaultConfig();
 		
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
@@ -188,18 +209,19 @@ public class Main extends JavaPlugin implements Listener {
 				if(Main.getPlugin().getConfig().getConfigurationSection("Bounties") == null) return;
 				
 				for(String path : Main.getPlugin().getConfig().getConfigurationSection("Bounties").getKeys(false)) {
-					UUID playerUUID = UUID.fromString(path);
+					UUID playerUUID = UUID.fromString(Main.getPlugin().getConfig().getString("Bounties." + path + ".customer"));
 					Player player = (Player) Bukkit.getPlayer(playerUUID);
 					if(player == null) {
 						OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUUID);
-						long placed = Main.getPlugin().getConfig().getLong("Bounties." + path + ".customer");
+						long placed = Main.getPlugin().getConfig().getLong("Bounties." + path + ".placed");
 						if(placed + 172800000 < System.currentTimeMillis()) {
-							Economy.updateOfflinePlayerCredits(offlinePlayer, placed);
+							long price = Long.parseLong(Main.getPlugin().getConfig().getString("Bounties." + path + ".price"));
+							Economy.updateOfflinePlayerCredits(offlinePlayer, price);
 							Main.getPlugin().getConfig().set("Bounties." + path, null);
 							saveConfigFile(Main.getPlugin().getConfig(), new File(getDataFolder(), "config.yml"));
-							
+							System.out.println("BOUNTY REMOVED");
 						}
-						
+						continue;
 					}
 					
 					long placed = Main.getPlugin().getConfig().getLong("Bounties." + path + ".placed");
@@ -212,8 +234,11 @@ public class Main extends JavaPlugin implements Listener {
 				        long updatedCredits = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".credits");
 						playerBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + updatedCredits);
 						player.setScoreboard(playerBoard);
-						
+						System.out.println("BOUNTY REMOVED..");
+						Main.getPlugin().getConfig().set("Bounties." + path, null);
 						saveConfigFile(Main.getPlugin().getConfig(), new File(getDataFolder(), "config.yml"));
+						
+						
 					}
 					
 					
@@ -271,6 +296,7 @@ public class Main extends JavaPlugin implements Listener {
 		if(e.getEntity() instanceof Player) {
 			Player player = (Player) e.getEntity();
 			Killstreaks.removeKillstreak(player);
+			if(Main.ServerPlayers.get(player.getUniqueId()).isMonked) Main.ServerPlayers.get(player.getUniqueId()).isMonked = false;
 		}
 		if(e.getEntity() != null && e.getEntity() instanceof Player) {
 			Player player = (Player) e.getEntity();
@@ -351,6 +377,19 @@ public class Main extends JavaPlugin implements Listener {
 		List<String> kitArmor = Main.getPlugin().getConfig().getStringList("kits." + kitName + ".armor");
 		//Set<String> kitItems = this.getConfig().getConfigurationSection("kits." + args[0]).getKeys(false);
 		System.out.println(kitItems);
+		
+		if(!player.hasPermission("group." + Main.getPlugin().getConfig().getString("kits." + kitName + ".permission"))) {
+			player.sendMessage(ChatColor.RED + "You do not have access to this kit.");
+			return;
+		}
+		
+		
+		if(Main.getPlugin().getConfig().contains("Players." + player.getUniqueId() + ".kits." + kitName)) {
+			String cooldown = Main.getPlugin().getConfig().getString("kits." + kitName + ".cooldown");
+			String playerLastUsedKit = Main.getPlugin().getConfig().getString("Players." + player.getUniqueId() + ".kits." + kitName);
+			Boolean check = Kits.checkKitCooldown(player, Long.parseLong(cooldown) * 3600000, Long.parseLong(playerLastUsedKit));
+			if(!check) return;
+		}
 		int kitSize = kitItems.size() + kitArmor.size();
 		if(player.getInventory().firstEmpty() == -1 || Kits.getEmptySlots(player) < kitSize) {
 			player.sendMessage(ChatColor.RED + "You do not have enough space in your inventory.");
@@ -360,15 +399,15 @@ public class Main extends JavaPlugin implements Listener {
 		
 		for(int i = 0; i < kitItems.size(); i++) {
 			String [] itemParams = kitItems.get(i).split(" ");
-			Kits.giveItem(player, itemParams);
+			Kits.giveItem(player, itemParams, kitName.toUpperCase());
 		}
 		
 		if(player.getInventory().getHelmet() == null && player.getInventory().getChestplate() == null && player.getInventory().getLeggings() == null && player.getInventory().getBoots() == null) {
-			Kits.equipArmor(player, kitArmor);
+			Kits.equipArmor(player, kitArmor, kitName.toUpperCase());
 		} else {
 			for(int i = 0; i < kitArmor.size(); i++) {
 				String[] itemParams = kitArmor.get(i).split(" ");
-				Kits.giveItem(player, itemParams);
+				Kits.giveItem(player, itemParams, kitName.toUpperCase());
 			}
 		}
 

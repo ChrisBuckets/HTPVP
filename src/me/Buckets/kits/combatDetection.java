@@ -166,7 +166,6 @@ public class combatDetection implements Listener{
 		if(!Kits.players.contains(player.getUniqueId())) {
 			Kits.players.add(player.getUniqueId());
 		}
-		if(Main.ServerPlayers.get(player.getUniqueId()).isMonked) Main.ServerPlayers.get(player.getUniqueId()).isMonked = false;
 		if(combatTag.checkTagged(player)) {
 			Bukkit.getServer().getScheduler().cancelTask(combatTag.playerTags.get(player));
 			combatTag.playerTags.remove(player);

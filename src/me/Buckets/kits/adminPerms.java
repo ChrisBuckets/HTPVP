@@ -15,7 +15,12 @@ import net.md_5.bungee.api.ChatColor;
 
 public class adminPerms implements CommandExecutor{
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		Player player = (Player) sender;
+		
+		
+		
+		
+		Player player = null;
+		if(sender instanceof Player) player = (Player) sender;
 		if(label.equalsIgnoreCase("announce")) {
 			if(!player.hasPermission("group.admin")) {
 				player.sendMessage(ChatColor.DARK_RED + "You do not have permission.");
@@ -127,6 +132,17 @@ public class adminPerms implements CommandExecutor{
 		}
 		
 		if(label.equalsIgnoreCase("unban")) {
+			if(!(sender instanceof Player)) {
+				OfflinePlayer playerToUnban = (OfflinePlayer) Bukkit.getOfflinePlayer(args[0]);
+				if(!playerToUnban.isBanned()) {
+					System.out.println(ChatColor.RED + "Player is not banned.");
+					return true;
+				}
+				Bukkit.getBanList(BanList.Type.NAME).pardon(playerToUnban.getName());
+				System.out.println(playerToUnban.getName() + " is now unbanned.");
+				return true;
+			}
+
 			if(!player.hasPermission("group.admin")) {
 				player.sendMessage(ChatColor.DARK_RED + "You do not have permission.");
 				return true;
@@ -172,7 +188,28 @@ public class adminPerms implements CommandExecutor{
 		
 		
 		
+		if(label.equalsIgnoreCase("help")) {
+			player.sendMessage(ChatColor.GOLD + "" + "HELP");
+			player.sendMessage(ChatColor.GOLD + "1." + ChatColor.RED + " /Kits" + ChatColor.YELLOW + " provides all kits available in a GUI.");
+			player.sendMessage(ChatColor.GOLD + "2." + ChatColor.RED + " /Kit" + ChatColor.YELLOW + " list all kits available in the server.");
+			player.sendMessage(ChatColor.GOLD + "3." + ChatColor.RED + " /Soup" + ChatColor.YELLOW + " changes your healing to Soup.");
+			player.sendMessage(ChatColor.GOLD + "4." + ChatColor.RED + " /Pots" + ChatColor.YELLOW + " changes your healing to Healing Potions.");
+			player.sendMessage(ChatColor.GOLD + "5." + ChatColor.RED + " /Shop" + ChatColor.YELLOW + " will take you to our shop without using the teleporter.");
+			player.sendMessage(ChatColor.GOLD + "6." + ChatColor.RED + " /Rules" + ChatColor.YELLOW + " list all rules on the server.");
+			player.sendMessage(ChatColor.GOLD + "7." + ChatColor.RED + " /Warp" + ChatColor.YELLOW + " shows a list of all available warps.");
+			player.sendMessage(ChatColor.GOLD + "8." + ChatColor.RED + " /Hit" + ChatColor.YELLOW + " places a bounty on a player. Minimum hit is 1,000 Credits.");
+			player.sendMessage(ChatColor.GOLD + "9." + ChatColor.RED + " /Hits" + ChatColor.YELLOW + " list all available bounties up for claim.");
+			player.sendMessage(ChatColor.GOLD + "10." + ChatColor.RED + " /Base" + ChatColor.YELLOW + " &" + ChatColor.RED + " /Home" + ChatColor.YELLOW + " takes you to your base if you have one.");
+			player.sendMessage(ChatColor.GOLD + "11." + ChatColor.RED + " /Report" + ChatColor.YELLOW + " reports a player for any complaint you have. Use appropriately.");
+			player.sendMessage(ChatColor.GOLD + "12." + ChatColor.RED + " /Spawn" + ChatColor.YELLOW + " takes you back to spawn from anywhere. Useful if you are stuck.");
+			player.sendMessage(ChatColor.GOLD + "13." + ChatColor.RED + " /PM" + ChatColor.YELLOW + " sends a message to any player online.");
+			return true;
+		}
 		
+		if(label.equalsIgnoreCase("rules")) {
+			player.sendMessage(ChatColor.AQUA + "Join our Discord to see our rules!" + ChatColor.GOLD + " https://discord.gg/qFHJUq");
+			return true;
+		}
 		if(label.equalsIgnoreCase("report")) {
 			if(args.length <= 0) {
 				player.sendMessage(ChatColor.RED + "Usage: /report [message]");

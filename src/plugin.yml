@@ -41,8 +41,22 @@ commands:
   npcadd:
   give:
   pay:
-  pwarp:
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  pwarp:
+  pw:
   whisper:
   w:
   msg:
@@ -57,3 +71,18 @@ commands:
   
   enchant:
   
+
+  
+  
+  
+  
+  
+  help:
+  
+  
+  
+  
+  
+  
+  
+  rules:

@@ -12,6 +12,43 @@ import net.md_5.bungee.api.ChatColor;
 
 public class Economy implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if(!(sender instanceof Player)) {
+			Player target = Bukkit.getPlayer(args[0]);
+			if(target == null) {
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				System.out.println(ChatColor.RED + "Player not found.");
+				
+				
+				
+				return true;
+				
+			}
+			
+			
+		    try {
+		        Integer.parseInt(args[1]);
+		        Economy.updateCredits(target, Integer.parseInt(args[1]));
+		        Scoreboard targetBoard = target.getScoreboard();
+		        long updatedCredits = Main.getPlugin().getConfig().getLong("Players." + target.getUniqueId() + ".credits");
+				targetBoard.getTeam("statsCredits").setSuffix(ChatColor.GOLD + "" + updatedCredits);
+				target.setScoreboard(targetBoard);
+				System.out.println(ChatColor.GREEN + "You gave " + args[1] + " credits to " + ChatColor.stripColor(target.getDisplayName()));
+				target.sendMessage(ChatColor.GREEN + "You received " + args[1] + " credits from the server");
+		        return true;
+		    } catch (final NumberFormatException e) {
+		    	System.out.println(ChatColor.RED + "Not a number.");
+		        return true;
+		    }
+		}
 		Player player = (Player) sender;
 		if(label.equalsIgnoreCase("money") || label.equalsIgnoreCase("balance") || label.equalsIgnoreCase("credits")) {	
 			if(args.length <= 0) {
@@ -26,7 +63,7 @@ public class Economy implements CommandExecutor {
 			}
 			
 			
-			Player target = Bukkit.getPlayer(args[1]);
+			Player target = Bukkit.getPlayer(args[0]);
 			if(target == null) {
 				player.sendMessage(ChatColor.RED + "Player not found.");
 				return true;

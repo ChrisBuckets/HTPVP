@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="C:/Users/Chris Winterowd/Desktop/spigot-1.8.8.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Chris Winterowd/Downloads/Citizens-2.0.27-b2014.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Chris Winterowd/Downloads/HolographicDisplays (10).jar"/>
+	<classpathentry kind="lib" path="C:/Users/Chris Winterowd/Downloads/ArmorEquipEvent-1.7.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -95,6 +96,8 @@ public class Kits implements CommandExecutor {
 			}
 		}
 		
+		
+		
 		if(label.equalsIgnoreCase("kit")) {
 			if(sender instanceof Player) {
 				Player player = (Player) sender;
@@ -116,7 +119,17 @@ public class Kits implements CommandExecutor {
 					return true;
 				}
 				
-
+				if(!player.hasPermission("group." + Main.getPlugin().getConfig().getString("kits." + args[0].toLowerCase() + ".permission"))) {
+					player.sendMessage(ChatColor.RED + "You do not have access to this kit.");
+					return true;
+				}
+				
+				if(Main.getPlugin().getConfig().contains("Players." + player.getUniqueId() + ".kits." + args[0].toLowerCase())) {
+					String cooldown = Main.getPlugin().getConfig().getString("kits." + args[0].toLowerCase() + ".cooldown");
+					String playerLastUsedKit = Main.getPlugin().getConfig().getString("Players." + player.getUniqueId() + ".kits." + args[0].toLowerCase());
+					Boolean check = Kits.checkKitCooldown(player, Long.parseLong(cooldown) * 3600000, Long.parseLong(playerLastUsedKit));
+					if(!check) return true;
+				}
 				//System.out.println(this.getConfig().getStringList("kits." + args[0] + ".items")); 
 				
 				List<String> kitItems = Main.getPlugin().getConfig().getStringList("kits." + args[0].toLowerCase() + ".items");
@@ -128,15 +141,34 @@ public class Kits implements CommandExecutor {
 				}
 				for(int i = 0; i < kitItems.size(); i++) {
 					String[] itemParams = kitItems.get(i).split(" ");
-					giveItem(player, itemParams);
+					giveItem(player, itemParams, args[0].toUpperCase());
+				}
+				
+				if(!Main.getPlugin().getConfig().contains("kits." + args[0].toLowerCase() + ".menuItem")) {
+					Potion strengthPotion = new Potion(PotionType.STRENGTH, 1);
+					ItemStack strengthPot = strengthPotion.toItemStack(1);
+					
+					ItemMeta strengthPotMeta = strengthPot.getItemMeta();
+					
+					List<String> lore = new ArrayList<String>();
+					lore.add(ChatColor.AQUA + "KIT " + args[0].toUpperCase());
+					strengthPotMeta.setLore(lore);
+					strengthPot.setItemMeta(strengthPotMeta);
+					Potion speedPotion = new Potion(PotionType.SPEED, 1);
+					ItemStack speedPot = speedPotion.toItemStack(1);
+					ItemMeta speedPotMeta = strengthPot.getItemMeta();
+					speedPotMeta.setLore(lore);
+					speedPot.setItemMeta(speedPotMeta);
+					player.getInventory().addItem(strengthPot);
+					player.getInventory().addItem(speedPot);
 				}
 				
 				if(player.getInventory().getHelmet() == null && player.getInventory().getChestplate() == null && player.getInventory().getLeggings() == null && player.getInventory().getBoots() == null) {
-					Kits.equipArmor(player, kitArmor);
+					Kits.equipArmor(player, kitArmor, args[0].toUpperCase());
 				} else {
 					for(int i = 0; i < kitArmor.size(); i++) {
 						String[] itemParams = kitArmor.get(i).split(" ");
-						giveItem(player, itemParams);
+						giveItem(player, itemParams, args[0].toUpperCase());
 					}
 				}
 
@@ -144,6 +176,8 @@ public class Kits implements CommandExecutor {
 				giveHeals(player);
 				
 				
+				Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".kits." + args[0].toLowerCase(), System.currentTimeMillis());
+				Main.getPlugin().saveConfig();
 				player.sendMessage(ChatColor.GRAY + "Kit redeemed");
 				return true;
 				
@@ -174,6 +208,7 @@ public class Kits implements CommandExecutor {
 		
 		int index = 0;
 		for(String path : Main.getPlugin().getConfig().getConfigurationSection("kits").getKeys(false)) {
+			if(!Main.getPlugin().getConfig().contains("kits." + path + ".menuItem")) continue;
 			System.out.println(index + "index" + path); 
 			String [] menuItemParams = Main.getPlugin().getConfig().getString("kits." + path + ".menuItem").split(" ");
 			String menuItem = menuItemParams[0];
@@ -205,7 +240,7 @@ public class Kits implements CommandExecutor {
 		
 	}
 	
-	public static void giveItem(Player player, String [] itemParams) {
+	public static void giveItem(Player player, String [] itemParams, String kitName) {
 		String itemName = itemParams[0];
 		int itemAmount = 1;
 		ItemStack item = new ItemStack(Material.DIAMOND_SWORD, itemAmount);
@@ -221,6 +256,11 @@ public class Kits implements CommandExecutor {
 					String enchantmentLevel = enchantmentParams[1];
 					System.out.println(enchantmentName + enchantmentLevel);
 					item.addUnsafeEnchantment(Enchantment.getByName(enchantmentName), Integer.parseInt(enchantmentLevel));
+					ItemMeta itemMeta = item.getItemMeta();
+					List<String> lore = new ArrayList<String>();
+					lore.add(ChatColor.AQUA + "KIT " + kitName);
+					itemMeta.setLore(lore);
+					item.setItemMeta(itemMeta);
 				}
 			}
 		}
@@ -238,6 +278,9 @@ public class Kits implements CommandExecutor {
 			}
 					
 			itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&" + itemNameParams[0] + getItemNameDisplay));
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.AQUA + "KIT " + kitName);
+			itemMeta.setLore(lore);
 			item.setItemMeta(itemMeta);
 		}
 		if(itemName.equalsIgnoreCase("CUSTOM")) {
@@ -255,10 +298,14 @@ public class Kits implements CommandExecutor {
 				}
 			}
 			LeatherArmorMeta m = (LeatherArmorMeta) item.getItemMeta();
+			
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.AQUA + "KIT " + kitName);
+			m.setLore(lore);
 			m.setColor(Color.fromRGB(Integer.parseInt(color[0]), Integer.parseInt(color[1]), Integer.parseInt(color[2])));;
 			item.setItemMeta(m);
 		}
-
+		
 		player.getInventory().addItem(item);
 		
 	}
@@ -282,7 +329,7 @@ public class Kits implements CommandExecutor {
 		}
 	}
 	
-	public static void equipArmor(Player player, List <String> kitArmor) {
+	public static void equipArmor(Player player, List <String> kitArmor, String kitName) {
 		for(int i = 0; i < kitArmor.size(); i++) {
 			String[] armorParams = kitArmor.get(i).split(" ");
 			String itemName = armorParams[0];
@@ -323,11 +370,17 @@ public class Kits implements CommandExecutor {
 				item.setItemMeta(m);
 			}
 
+			ItemMeta itemMeta = item.getItemMeta();
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.AQUA + "KIT " + kitName);
+			itemMeta.setLore(lore);
+			item.setItemMeta(itemMeta);
 			
 			if(itemName.equalsIgnoreCase("IRON_HELMET") || itemName.equalsIgnoreCase("DIAMOND_HELMET") || itemName.equalsIgnoreCase("CHAINMAIL_HELMET") || itemName.equalsIgnoreCase("LEATHER_HELMET")) player.getInventory().setHelmet(item);
 			if(itemName.equalsIgnoreCase("IRON_CHESTPLATE") || itemName.equalsIgnoreCase("DIAMOND_CHESTPLATE") || itemName.equalsIgnoreCase("CHAINMAIL_CHESTPLATE") || itemName.equalsIgnoreCase("LEATHER_CHESTPLATE")) player.getInventory().setChestplate(item);
 			if(itemName.equalsIgnoreCase("IRON_LEGGINGS") || itemName.equalsIgnoreCase("DIAMOND_LEGGINGS") || itemName.equalsIgnoreCase("CHAINMAIL_LEGGINGS") || itemName.equalsIgnoreCase("LEATHER_LEGGINGS")) player.getInventory().setLeggings(item);
 			if(itemName.equalsIgnoreCase("IRON_BOOTS") || itemName.equalsIgnoreCase("DIAMOND_BOOTS") || itemName.equalsIgnoreCase("CHAINMAIL_BOOTS") || itemName.equalsIgnoreCase("LEATHER_BOOTS")) player.getInventory().setBoots(item);
+			
 			
 
 		}
@@ -335,7 +388,19 @@ public class Kits implements CommandExecutor {
 	}
 	
 
-	
+	public static Boolean checkKitCooldown(Player player, long cooldown, long lastUsed) {
+		if(!player.hasPermission("group.owner") && System.currentTimeMillis() < lastUsed + cooldown) {
+			long originalCooldown = cooldown;
+			if(player.hasPermission("group.mvp")) cooldown = (long) (originalCooldown * .75);
+			if(player.hasPermission("group.alpha")) cooldown = (long) (originalCooldown * .50);
+			String kitLeft = Kits.getDurationBreakdown((long)Math.floor(((lastUsed + cooldown) - System.currentTimeMillis())));
+			
+			//long minutes = (long) (lastUsed + cooldown) - System.currentTimeMillis();
+			player.sendMessage(ChatColor.RED + "You have " + kitLeft + " until you can use this kit again.");
+			return false;
+		}
+		return true;
+	}
 	
     public static int getEmptySlots(Player p) {
         PlayerInventory inventory = p.getInventory();
@@ -346,6 +411,34 @@ public class Kits implements CommandExecutor {
             i++;
           }
         return 36 - i;
+    }
+    
+    public static String getDurationBreakdown(long millis) {
+        if(millis < 0) {
+            throw new IllegalArgumentException("Duration must be greater than zero!");
+        }
+
+        long days = TimeUnit.MILLISECONDS.toDays(millis);
+        millis -= TimeUnit.DAYS.toMillis(days);
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        millis -= TimeUnit.HOURS.toMillis(hours);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+        millis -= TimeUnit.MINUTES.toMillis(minutes);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
+
+        StringBuilder sb = new StringBuilder(64);
+        //sb.append(days);
+        //sb.append(" Days ");
+        sb.append(hours);
+        sb.append(" hours");
+        sb.append(", ");
+        sb.append(minutes);
+        sb.append(" minutes");
+        sb.append(" and ");
+        sb.append(seconds);
+        sb.append(" seconds");
+
+        return(sb.toString());
     }
 }
 

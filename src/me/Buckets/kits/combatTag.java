@@ -49,7 +49,7 @@ public class combatTag {
             	player.sendMessage(ChatColor.GRAY + "You are no longer in combat and can safely log out.");
             	playerTags.remove(player);
             }
-          }, 300);
+          }, 500);
 
 
 		playerTags.put(player, playerTag);

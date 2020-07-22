@@ -105,13 +105,26 @@ public class createBase implements CommandExecutor {
 				player.sendMessage(ChatColor.RED + "You can't teleport while in combat.");
 				return true;
 			}
+			
+			if(args.length > 0 && args[0].equalsIgnoreCase("help")) {
+				player.sendMessage(ChatColor.GOLD + "" + "BASE HELP");
+				player.sendMessage(ChatColor.GOLD + "1." + ChatColor.YELLOW + " Custom bases are available for purchase at" + ChatColor.AQUA + " https://store.htpvp.com");
+				player.sendMessage(ChatColor.GOLD + "2." + ChatColor.YELLOW + " Bases purchased will come with ONLY 1 double chest and are available for purchase.");
+				player.sendMessage(ChatColor.GOLD + "3." + ChatColor.YELLOW + " If a base is purchased, use" + ChatColor.RED + " /base" + ChatColor.YELLOW + " or" + ChatColor.RED + " /home" + ChatColor.YELLOW + ". They are automatically set for you.");
+				player.sendMessage(ChatColor.GOLD + "4." + ChatColor.YELLOW + " Bases have no limits on the amount of chest, anvils or brewing stands placed.");
+				player.sendMessage(ChatColor.GOLD + "5." + ChatColor.YELLOW + " Experiencing any trouble or find any bugs? Use" + ChatColor.RED + " /report" + ChatColor.YELLOW + " to contact a staff member.");
+				player.sendMessage(ChatColor.GOLD + "6." + ChatColor.YELLOW + " Bases are a limited 1 person only restriction.");
+				return true;
+			}
+			
 			if(args.length > 0 && !args[0].equalsIgnoreCase("mvp") && !args[0].equalsIgnoreCase("alpha")) {
 				player.sendMessage(ChatColor.RED + "Invalid base.");
 				return true;
 			}
+			
 			if(args.length > 0 && args[0].equalsIgnoreCase("mvp")) {
-				if(!player.hasPermission("mvpbase") && !player.hasPermission("group.mvp")) {
-					player.sendMessage(""); //tell them they don't have a base, give them link to buycraft store
+				if(!player.hasPermission("mvpbase")) {
+					player.sendMessage(ChatColor.GOLD + "[HTPVP] " + ChatColor.AQUA + "You don't have an MVP base, visit our shop at " + ChatColor.GREEN + "https://store.htpvp.com" + ChatColor.AQUA + " to purchase one."); //tell them they don't have a base, give them link to buycraft store
 					return true;
 				}
 				
@@ -170,8 +183,8 @@ public class createBase implements CommandExecutor {
 			
 			
 			if(args.length > 0 && args[0].equalsIgnoreCase("alpha")) {
-				if(!player.hasPermission("alphabase") && !player.hasPermission("group.alpha")) {
-					player.sendMessage(""); //tell them they don't have a base, give them link to buycraft store
+				if(!player.hasPermission("alphabase")) {
+					player.sendMessage(ChatColor.GOLD + "[HTPVP] " + ChatColor.AQUA + "You don't have an ALPHA base, visit our shop at " + ChatColor.GREEN + "https://store.htpvp.com" + ChatColor.AQUA + " to purchase one."); //tell them they don't have a base, give them link to buycraft store
 					return true;
 				}
 				
@@ -220,9 +233,7 @@ public class createBase implements CommandExecutor {
 				return true;
 			}
 			
-			if(!Main.getPlugin().getConfig().contains("Players." + player.getUniqueId().toString() + ".Base.mvp") && 
-					!Main.getPlugin().getConfig().getBoolean("Players." + player.getUniqueId().toString() + ".Base.preset.owned") &&
-					!Main.getPlugin().getConfig().contains("Players." + player.getUniqueId().toString() + ".Base.alpha") ) {
+			if(!Main.getPlugin().getConfig().getBoolean("Players." + player.getUniqueId().toString() + ".Base.preset.owned")) {
 				player.sendMessage(ChatColor.RED + "You do not have a base from the shop, use /base mvp or /base alpha if you own a donator base.");
 				return true;
 			}

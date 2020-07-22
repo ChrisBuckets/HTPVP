@@ -33,7 +33,7 @@ import net.md_5.bungee.api.ChatColor;
 public class playerWarps implements CommandExecutor{
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = (Player) sender;
-		if(label.equalsIgnoreCase("pwarp")) {
+		if(label.equalsIgnoreCase("pwarp") || label.equalsIgnoreCase("pw")) {
 			if(args.length <= 0) {
 				createWarpList(player);
 				//player.sendMessage(ChatColor.RED + "Usage: /pwarp [player warp name]");
@@ -105,7 +105,7 @@ public class playerWarps implements CommandExecutor{
 						regions.getRegion(ChatColor.stripColor(player.getDisplayName()) + "playerwarpspawn").getOwners().addPlayer(player.getUniqueId());
 						
 						Main.getPlugin().saveConfig();
-						player.sendMessage("Warp created");
+						player.sendMessage(ChatColor.GOLD + "[HTPVP] " + ChatColor.AQUA + "Warp created, you can go to your warp using /pwarp " + player.getName());
 						return true;
 					}
 				}

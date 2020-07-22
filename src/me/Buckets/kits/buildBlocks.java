@@ -82,7 +82,7 @@ public class buildBlocks implements CommandExecutor {
 			if(item.getType().equals(Material.DIAMOND_BLOCK)) item = new ItemStack(Material.matchMaterial(args[0]), Integer.parseInt(args[1]));
 			player.getInventory().addItem(item);
 			player.sendMessage(ChatColor.GREEN + "Item received.");
-			player.sendMessage(player.getInventory().getItemInHand().toString());
+			
 		}
 		return false;
 	}
