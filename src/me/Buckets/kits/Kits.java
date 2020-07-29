@@ -56,12 +56,27 @@ public class Kits implements CommandExecutor {
 					player.sendMessage(ChatColor.RED + "You can't teleport while in combat.");
 					return true;
 				}
-				System.out.println(player.getLocation());
-				Location loc = new Location(Main.getPlugin().getServer().getWorld("Kit World"), 11.505743587904526, 156.0, -38.62288293331645);
-				player.teleport(loc);
-				if(!Kits.players.contains(player.getUniqueId())) {
-					players.add(player.getUniqueId());
+				
+				if(Main.ServerPlayers.get(player.getUniqueId()).toWarping != 0) {
+					player.sendMessage(ChatColor.RED + "You are already teleporting somewhere.");
+					return true;
 				}
+				
+				int teleportDelay = 100;
+				if(!kitItems.checkPvpRegion(player)) teleportDelay = 0;
+				if(kitItems.checkPvpRegion(player)) player.sendMessage(ChatColor.GREEN + "You will be teleported in 5 seconds. Don't move.");
+				Main.ServerPlayers.get(player.getUniqueId()).toWarping = Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getPlugin(), new Runnable() {
+		            public void run() {
+						System.out.println(player.getLocation());
+						Location loc = new Location(Main.getPlugin().getServer().getWorld("Kit World"), 11.505743587904526, 156.0, -38.62288293331645);
+						player.teleport(loc);
+						if(!Kits.players.contains(player.getUniqueId())) {
+							players.add(player.getUniqueId());
+						}
+						Main.ServerPlayers.get(player.getUniqueId()).toWarping = 0;
+		            }
+		          }, teleportDelay);
+
 				
 				//leaderboardStatues.addJoinPacket(player);
 				return true;
@@ -194,6 +209,7 @@ public class Kits implements CommandExecutor {
 					player.sendMessage(ChatColor.RED + "You can't redeem kits while in combat.");
 					return true;
 				}
+				
 				player.openInventory(kitSelection);
 				return true;
 			}
@@ -389,10 +405,9 @@ public class Kits implements CommandExecutor {
 	
 
 	public static Boolean checkKitCooldown(Player player, long cooldown, long lastUsed) {
+		if(player.hasPermission("group.mvp")) cooldown = (long) (cooldown * .75);
+		if(player.hasPermission("group.alpha")) cooldown = (long) (cooldown * .50);
 		if(!player.hasPermission("group.owner") && System.currentTimeMillis() < lastUsed + cooldown) {
-			long originalCooldown = cooldown;
-			if(player.hasPermission("group.mvp")) cooldown = (long) (originalCooldown * .75);
-			if(player.hasPermission("group.alpha")) cooldown = (long) (originalCooldown * .50);
 			String kitLeft = Kits.getDurationBreakdown((long)Math.floor(((lastUsed + cooldown) - System.currentTimeMillis())));
 			
 			//long minutes = (long) (lastUsed + cooldown) - System.currentTimeMillis();

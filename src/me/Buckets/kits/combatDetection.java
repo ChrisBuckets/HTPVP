@@ -13,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
@@ -21,6 +22,20 @@ import net.md_5.bungee.api.ChatColor;
 
 
 public class combatDetection implements Listener{
+	
+	@EventHandler
+	
+	public static void playerMove(PlayerMoveEvent e) {
+		Player player = (Player) e.getPlayer();
+		if(e.getFrom().getZ() != e.getTo().getZ() && e.getFrom().getX() != e.getTo().getX()) {
+			
+			if(Main.ServerPlayers.get(player.getUniqueId()).toWarping != 0) {
+				player.sendMessage(ChatColor.RED + "Teleport to spawn cancelled.");
+				Bukkit.getServer().getScheduler().cancelTask(Main.ServerPlayers.get(player.getUniqueId()).toWarping);
+				Main.ServerPlayers.get(player.getUniqueId()).toWarping = 0;
+			}
+		}
+	}
 	@EventHandler
 	public static void fallDamage(EntityDamageEvent e) {
 		if(e.getCause() == DamageCause.FALL) {

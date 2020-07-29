@@ -49,8 +49,6 @@ public class playerWarps implements CommandExecutor{
 					}
 					
 					
-					
-					
 					if(!Main.getPlugin().getConfig().contains("playerWarps." + player.getName().toLowerCase())) {
 						if(!Main.getPlugin().getConfig().contains("Warp.coords")) {
 							Main.getPlugin().getConfig().set("Warp.coords.x", -2000);
@@ -123,12 +121,26 @@ public class playerWarps implements CommandExecutor{
 				player.sendMessage(ChatColor.RED + "You can't teleport while in combat.");
 				return true;
 			}
-			double x = Main.getPlugin().getConfig().getDouble("playerWarps." + playerWarp + ".x");
-			double y = Main.getPlugin().getConfig().getDouble("playerWarps." + playerWarp + ".y");
-			double z = Main.getPlugin().getConfig().getDouble("playerWarps." + playerWarp + ".z");
-			Location playerWarpTp = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z, 180, 0);
 			
-			player.teleport(playerWarpTp);
+			if(Main.ServerPlayers.get(player.getUniqueId()).toWarping != 0) {
+				player.sendMessage(ChatColor.RED + "You are already teleporting somewhere.");
+				return true;
+			}
+			
+			int teleportDelay = 100;
+			if(!kitItems.checkPvpRegion(player)) teleportDelay = 0;
+			if(kitItems.checkPvpRegion(player)) player.sendMessage(ChatColor.GREEN + "You will be teleported in 5 seconds. Don't move.");
+			Main.ServerPlayers.get(player.getUniqueId()).toWarping = Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getPlugin(), new Runnable() {
+	            public void run() {
+	    			double x = Main.getPlugin().getConfig().getDouble("playerWarps." + playerWarp + ".x");
+	    			double y = Main.getPlugin().getConfig().getDouble("playerWarps." + playerWarp + ".y");
+	    			double z = Main.getPlugin().getConfig().getDouble("playerWarps." + playerWarp + ".z");
+	    			Location playerWarpTp = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z, 180, 0);
+	    			
+	    			player.teleport(playerWarpTp);
+	    			Main.ServerPlayers.get(player.getUniqueId()).toWarping = 0;
+	            }
+	          }, teleportDelay);
 
 			return true;
 		}

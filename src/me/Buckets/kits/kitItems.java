@@ -62,7 +62,9 @@ public class kitItems implements Listener {
 			if(player.getInventory().getItemInHand().getItemMeta().hasDisplayName() && 
 					player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.DARK_RED + "Fireball") ||
 					player.getInventory().getItemInHand().getItemMeta().hasDisplayName() && 
-					player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Landmine")) {
+					player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Landmine") || 
+					player.getInventory().getItemInHand().getItemMeta().hasDisplayName() && 
+					player.getInventory().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.GOLD + "Eagle Wing")) {
 				if(!checkPvpRegion(player)) {
 					player.sendMessage(ChatColor.RED + "You can't use this kit item here.");
 					return;

@@ -188,6 +188,7 @@ public class leaderboardStatues implements CommandExecutor {
 		for(String path : Main.getPlugin().getConfig().getConfigurationSection("Players.").getKeys(false)) {
 			long kills = Main.getPlugin().getConfig().getLong("Players." + path + ".kills");
 			long deaths = Main.getPlugin().getConfig().getLong("Players." + path + ".deaths");
+			if(kills < 50) continue;
 			if(deaths <= 0) continue;
 			double kdr = (double) kills / (double) deaths;
 			if(kdr > bestStat) {
@@ -393,6 +394,8 @@ public class leaderboardStatues implements CommandExecutor {
 		double mostKDR = Main.getPlugin().getConfig().getDouble("Leaderboards.kdr.amount");
 		long kills = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".kills");
 		long deaths = Main.getPlugin().getConfig().getLong("Players." + player.getUniqueId() + ".deaths");
+		if(kills < 50) return;
+		if(deaths <= 0) return;
 		double playerKDR = (double) kills / (double) deaths;
 		DecimalFormat df = new DecimalFormat("#.##");
 		String kdrFormat = df.format(playerKDR);

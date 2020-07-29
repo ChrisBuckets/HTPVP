@@ -160,14 +160,27 @@ public class createBase implements CommandExecutor {
 					return true;
 				}
 				
-				int x = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.mvp.x");
-				int y = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.mvp.y");
-				int z = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.mvp.z");
+				if(Main.ServerPlayers.get(player.getUniqueId()).toWarping != 0) {
+					player.sendMessage(ChatColor.RED + "You are already teleporting somewhere.");
+					return true;
+				}
 				
-				
-				System.out.println(x + " " + y + " " + z);
-				Location base = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z);
-				player.teleport(base);
+				int teleportDelay = 100;
+				if(!kitItems.checkPvpRegion(player)) teleportDelay = 0;
+				if(kitItems.checkPvpRegion(player)) player.sendMessage(ChatColor.GREEN + "You will be teleported in 5 seconds. Don't move.");
+				Main.ServerPlayers.get(player.getUniqueId()).toWarping = Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getPlugin(), new Runnable() {
+		            public void run() {
+						int x = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.mvp.x");
+						int y = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.mvp.y");
+						int z = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.mvp.z");
+						
+						
+						System.out.println(x + " " + y + " " + z);
+						Location base = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z);
+						player.teleport(base);
+						Main.ServerPlayers.get(player.getUniqueId()).toWarping = 0;
+		            }
+		          }, teleportDelay);
 				return true;
 			}
 			
@@ -221,15 +234,23 @@ public class createBase implements CommandExecutor {
 					return true;
 				}
 				
+				int teleportDelay = 100;
+				if(!kitItems.checkPvpRegion(player)) teleportDelay = 0;
+				if(kitItems.checkPvpRegion(player)) player.sendMessage(ChatColor.GREEN + "You will be teleported in 5 seconds. Don't move.");
+				Main.ServerPlayers.get(player.getUniqueId()).toWarping = Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getPlugin(), new Runnable() {
+		            public void run() {
+						int x = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.alpha.x");
+						int y = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.alpha.y");
+						int z = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.alpha.z");
+						
+						
+						System.out.println(x + " " + y + " " + z);
+						Location base = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z);
+						player.teleport(base);
+						Main.ServerPlayers.get(player.getUniqueId()).toWarping = 0;
+		            }
+		          }, teleportDelay);
 				
-				int x = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.alpha.x");
-				int y = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.alpha.y");
-				int z = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.alpha.z");
-				
-				
-				System.out.println(x + " " + y + " " + z);
-				Location base = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z);
-				player.teleport(base);
 				return true;
 			}
 			
@@ -238,14 +259,24 @@ public class createBase implements CommandExecutor {
 				return true;
 			}
 			
-			int x = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.preset.x");
-			int y = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.preset.y");
-			int z = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.preset.z");
 			
-			
-			System.out.println(x + " " + y + " " + z);
-			Location base = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z);
-			player.teleport(base);
+			int teleportDelay = 100;
+			if(!kitItems.checkPvpRegion(player)) teleportDelay = 0;
+			if(kitItems.checkPvpRegion(player)) player.sendMessage(ChatColor.GREEN + "You will be teleported in 5 seconds. Don't move.");
+			Main.ServerPlayers.get(player.getUniqueId()).toWarping = Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getPlugin(), new Runnable() {
+	            public void run() {
+	    			int x = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.preset.x");
+	    			int y = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.preset.y");
+	    			int z = Main.getPlugin().getConfig().getInt("Players." + player.getUniqueId().toString() + ".Base.preset.z");
+	    			
+	    			
+	    			System.out.println(x + " " + y + " " + z);
+	    			Location base = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z);
+	    			player.teleport(base);
+	    			Main.ServerPlayers.get(player.getUniqueId()).toWarping = 0;
+	            }
+	          }, teleportDelay);
+
 			return true;
 		}
 		return false;

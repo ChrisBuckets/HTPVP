@@ -146,7 +146,7 @@ public class Main extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new baseSystem(), this);
 		this.getServer().getPluginManager().registerEvents(new kitItems(), this);
 		this.getServer().getPluginManager().registerEvents(new bountyBoard(), this);
-		
+		this.getServer().getPluginManager().registerEvents(new itemDrop(), this);
 		this.getServer().getPluginManager().registerEvents(new playerWarpBoard(), this);
 		
 		
@@ -154,7 +154,7 @@ public class Main extends JavaPlugin implements Listener {
 		
 		
 		this.getServer().getPluginManager().registerEvents(new shopPortal(), this);
-
+		this.getServer().getPluginManager().registerEvents(new kitsBoard(), this);
 		
 		this.getServer().getPluginManager().registerEvents(new repairSystem(), this);
 		this.saveDefaultConfig();
@@ -277,6 +277,12 @@ public class Main extends JavaPlugin implements Listener {
 			System.out.println("Saved");
 			Location loc = new Location(Main.getPlugin().getServer().getWorld("Kit World"), 11.505743587904526, 156.0, -38.62288293331645);
 			event.getPlayer().teleport(loc);
+			
+			
+			
+			if(!Kits.players.contains(event.getPlayer().getUniqueId())) {
+				Kits.players.add(event.getPlayer().getUniqueId());
+			}
 		}
 		
 		
@@ -314,8 +320,13 @@ public class Main extends JavaPlugin implements Listener {
 				if(killer == null) return;
 				if(killer == player) return;
 				double creditBoost = Double.parseDouble(Main.getPlugin().getConfig().getString("Players." + killer.getUniqueId() + ".creditBoost"));
+				double donatorBoost = 1.0;
+				if(killer.hasPermission("group.vip")) donatorBoost = 1.25;
+				if(killer.hasPermission("group.mvp")) donatorBoost = 1.5;
+				if(killer.hasPermission("group.mvp")) donatorBoost = 1.75;
+				if(killer.hasPermission("group.alpha")) donatorBoost = 2.0;
 				long randomCredits = ThreadLocalRandom.current().nextLong(90, 120 + 1);
-				long multipliedCredits = (long) Math.round(randomCredits * creditBoost);		
+				long multipliedCredits = (long) Math.round((randomCredits * creditBoost) * donatorBoost);		
 				Economy.updateCredits(killer, multipliedCredits);
 				String playerName = ChatColor.stripColor(player.getDisplayName());
 				killer.sendMessage(ChatColor.GREEN + "You received " + ChatColor.GOLD + multipliedCredits + " credits " + ChatColor.GREEN + "for killing " + playerName);
@@ -414,6 +425,9 @@ public class Main extends JavaPlugin implements Listener {
 
 		
 		Kits.giveHeals(player);
+		Main.getPlugin().getConfig().set("Players." + player.getUniqueId() + ".kits." + kitName.toLowerCase(), System.currentTimeMillis());
+		Main.getPlugin().saveConfig();
+		player.sendMessage(ChatColor.GRAY + "Kit redeemed");
 		player.closeInventory();
 		return;
 	}

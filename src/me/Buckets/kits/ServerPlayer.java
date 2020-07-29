@@ -14,7 +14,7 @@ public class ServerPlayer {
 	public Boolean isMonked;
 	
 	public Boolean isInvis;
-	
+	public int toWarping;
 	
 	
 	
@@ -59,6 +59,7 @@ public class ServerPlayer {
 		this.usedLandMine = 0;
 		
 		this.landmines = new HashMap<Block, Boolean>();
+		this.toWarping = 0;
 	}
 	
 	

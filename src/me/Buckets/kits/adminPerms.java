@@ -189,6 +189,7 @@ public class adminPerms implements CommandExecutor{
 		
 		
 		if(label.equalsIgnoreCase("help")) {
+			if(args.length > 0) return false;
 			player.sendMessage(ChatColor.GOLD + "" + "HELP");
 			player.sendMessage(ChatColor.GOLD + "1." + ChatColor.RED + " /Kits" + ChatColor.YELLOW + " provides all kits available in a GUI.");
 			player.sendMessage(ChatColor.GOLD + "2." + ChatColor.RED + " /Kit" + ChatColor.YELLOW + " list all kits available in the server.");
@@ -291,7 +292,7 @@ public class adminPerms implements CommandExecutor{
 		
 		if(label.equalsIgnoreCase("invis")) {
 			
-			if(!player.hasPermission("group.admin")) {
+			if(!player.hasPermission("group.mod")) {
 				player.sendMessage(ChatColor.RED + "You do not have permission.");
 				return true;
 			}
@@ -301,7 +302,7 @@ public class adminPerms implements CommandExecutor{
 			}
 			if(args[0].equalsIgnoreCase("on") ) {
 				for (Player online : Bukkit.getOnlinePlayers()) {
-					if(online.hasPermission("kitStaff.admin")) {
+					if(online.hasPermission("group.mod")) {
 						continue;
 					}
 					online.hidePlayer(player);
@@ -342,13 +343,32 @@ public class adminPerms implements CommandExecutor{
 				player.sendMessage(ChatColor.RED + "Warp not found.");
 				return true;
 			}
-			double x = Main.getPlugin().getConfig().getDouble("Warps." + name + ".x");
-			double y = Main.getPlugin().getConfig().getDouble("Warps." + name + ".y");
-			double z = Main.getPlugin().getConfig().getDouble("Warps." + name + ".z");
-			float yaw = (float) Main.getPlugin().getConfig().getDouble("Warps." + name + ".yaw");
-			float pitch = (float) Main.getPlugin().getConfig().getDouble("Warps." + name + ".pitch");
-			Location loc = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z, yaw, pitch);
-			player.teleport(loc);
+			
+			
+			
+			
+			if(Main.ServerPlayers.get(player.getUniqueId()).toWarping != 0) {
+				player.sendMessage(ChatColor.RED + "You are already teleporting somewhere.");
+				return true;
+			}
+			
+			int teleportDelay = 100;
+			if(!kitItems.checkPvpRegion(player)) teleportDelay = 0;
+			if(kitItems.checkPvpRegion(player)) player.sendMessage(ChatColor.GREEN + "You will be teleported in 5 seconds. Don't move.");
+			Main.ServerPlayers.get(player.getUniqueId()).toWarping = Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getPlugin(), new Runnable() {
+	            public void run() {
+	            	Player teleportPlayer = (Player) sender;
+	    			double x = Main.getPlugin().getConfig().getDouble("Warps." + name + ".x");
+	    			double y = Main.getPlugin().getConfig().getDouble("Warps." + name + ".y");
+	    			double z = Main.getPlugin().getConfig().getDouble("Warps." + name + ".z");
+	    			float yaw = (float) Main.getPlugin().getConfig().getDouble("Warps." + name + ".yaw");
+	    			float pitch = (float) Main.getPlugin().getConfig().getDouble("Warps." + name + ".pitch");
+	    			Location loc = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z, yaw, pitch);
+	    			if(teleportPlayer != null) teleportPlayer.teleport(loc);
+	    			Main.ServerPlayers.get(teleportPlayer.getUniqueId()).toWarping = 0;
+	            }
+	          }, teleportDelay);
+			return true;
 		}
 		
 		if(label.equalsIgnoreCase("setwarp")) {
@@ -412,13 +432,30 @@ public class adminPerms implements CommandExecutor{
 				player.sendMessage(ChatColor.RED + "You can't teleport while in combat.");
 				return true;
 			}
-			double x = Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".x");
-			double y = Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".y");
-			double z = Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".z");
-			float yaw = (float) Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".yaw");
-			float pitch = (float) Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".pitch");
-			Location loc = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z, yaw, pitch);
-	        player.teleport(loc);
+			
+			
+			if(Main.ServerPlayers.get(player.getUniqueId()).toWarping != 0) {
+				player.sendMessage(ChatColor.RED + "You are already teleporting somewhere.");
+				return true;
+			}
+			
+			int teleportDelay = 100;
+			if(!kitItems.checkPvpRegion(player)) teleportDelay = 0;
+			if(kitItems.checkPvpRegion(player)) player.sendMessage(ChatColor.GREEN + "You will be teleported in 5 seconds. Don't move.");
+			Main.ServerPlayers.get(player.getUniqueId()).toWarping = Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getPlugin(), new Runnable() {
+	            public void run() {
+	            	Player teleportPlayer = (Player) sender;
+	    			double x = Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".x");
+	    			double y = Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".y");
+	    			double z = Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".z");
+	    			float yaw = (float) Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".yaw");
+	    			float pitch = (float) Main.getPlugin().getConfig().getDouble("Warps." + "shop" + ".pitch");
+	    			Location loc = new Location(Main.getPlugin().getServer().getWorld("Kit World"), x, y, z, yaw, pitch);
+	    			if(teleportPlayer != null) teleportPlayer.teleport(loc);
+	    			Main.ServerPlayers.get(teleportPlayer.getUniqueId()).toWarping = 0;
+	            }
+	          }, teleportDelay);
+
 		}
 		return false;
 		
