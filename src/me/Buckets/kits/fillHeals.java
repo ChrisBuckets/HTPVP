@@ -7,9 +7,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 import net.md_5.bungee.api.ChatColor;
@@ -74,5 +77,20 @@ public class fillHeals implements Listener {
 		}
 
 		
+	}
+	
+	@EventHandler
+	public void splashPotionEvent(PotionSplashEvent event) {
+		Player player = (Player) event.getPotion().getShooter();
+		if(player != null) {
+			for(PotionEffect p : event.getPotion().getEffects()) {
+				if(p.getType().getName() == "HEAL") {
+					player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+					player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 160, 1));
+				}
+				
+			}
+			//player.sendMessage(event.getPotion().getEffects());
+		}
 	}
 }

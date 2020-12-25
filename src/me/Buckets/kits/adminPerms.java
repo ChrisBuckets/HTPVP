@@ -131,6 +131,23 @@ public class adminPerms implements CommandExecutor{
 			return true;
 		}
 		
+		if(label.equalsIgnoreCase("fly")) {
+			if(!player.hasPermission("group.mod")) {
+				player.sendMessage(ChatColor.DARK_RED + "You do not have permission.");
+				return true;	
+			}
+			
+			if(player.getAllowFlight()) {
+				player.setAllowFlight(false);
+				player.sendMessage(ChatColor.GRAY + "Fly disabled.");
+				return true;
+			}
+			
+			player.setAllowFlight(true);
+			player.sendMessage(ChatColor.GRAY + "Fly enabled.");
+			return true;
+		}
+		
 		if(label.equalsIgnoreCase("unban")) {
 			if(!(sender instanceof Player)) {
 				OfflinePlayer playerToUnban = (OfflinePlayer) Bukkit.getOfflinePlayer(args[0]);

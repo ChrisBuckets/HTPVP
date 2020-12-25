@@ -91,6 +91,7 @@ public class Main extends JavaPlugin implements Listener {
 		this.getCommand("hit").setExecutor(new Bounty());
 		this.getCommand("hits").setExecutor(new Bounty());
 		this.getCommand("ban").setExecutor(new adminPerms());
+		this.getCommand("fly").setExecutor(new adminPerms());
 		this.getCommand("unban").setExecutor(new adminPerms());
 		this.getCommand("mute").setExecutor(new adminPerms());
 		this.getCommand("report").setExecutor(new adminPerms());

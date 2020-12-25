@@ -14,6 +14,7 @@ commands:
   spawn:
   kick:
   ban:
+  fly:
   unban:
   mute:
   report:
